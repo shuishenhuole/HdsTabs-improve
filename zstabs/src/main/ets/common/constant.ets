@@ -110,11 +110,11 @@ export class ColorConstants {
   /** 遮罩颜色（透明），不影响底层高光效果 */
   static readonly MASK_COLOR: string = '#00ffffff';
   /** 指示器内部图标颜色（橙色） */
-  static readonly ICON_COLOR: string = '#ffff923e';
+  static readonly ICON_COLOR: string = '#ff923e';
   /** 指示器内部文本颜色（橙色） */
   static readonly TEXT_COLOR: string = '#ffff923e';
   /** TabBar浅色模式下的颜色 */
-  static readonly LIGHT_COLOR: string = '#ff00eaff';
+  static readonly LIGHT_COLOR: string = '#ffbeff0e';
 }
 
 /**

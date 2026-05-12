@@ -504,7 +504,7 @@ export struct ZSTabs {
       if (typeof icon === 'string') {
         Text(icon)
           .fontSize(24)
-          .fontColor(this.selectedTabIndex === index ? $r('sys.color.icon') : $r('sys.color.warning'))
+          .fontColor($r('sys.color.icon'))
           .margin({ bottom: 2 })
       } else {
         Image(icon)
@@ -512,13 +512,13 @@ export struct ZSTabs {
           .height(25)
           .objectFit(ImageFit.Contain)
           .margin({ bottom: 2 })
-          .fillColor(this.selectedTabIndex === index ? $r('sys.color.icon')  : $r('sys.color.warning'))
+          .fillColor($r('sys.color.icon'))
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)
         .fontSize(10)
-        .fontColor(this.selectedTabIndex === index ? $r('sys.color.icon')  : $r('sys.color.warning'))
-        .fontWeight(this.selectedTabIndex === index ? FontWeight.Bold : FontWeight.Regular)
+        .fontColor($r('sys.color.icon'))
+        .fontWeight(FontWeight.Bold)
     }
     .width('100%')
     .height('100%')

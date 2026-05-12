@@ -4,17 +4,17 @@ import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用�
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
 
-@Component
+@ComponentV2
 export struct ZSTabs {
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
-  @State illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
+  @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
 
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
   private readonly BASE_POSITIONS: number[] = [8.5, 85, 162.5, 241];
   // 基准容器宽度（vp），为tabbar的固定基础宽度
   private readonly BASE_CONTAINER_WIDTH: number = 330;
   // 指示器容器实时宽度，用于适配不同设备/屏幕尺寸的动态调整
-  @State private indicatorContainerWidth: number = 330;
+  @Local private indicatorContainerWidth: number = 330;
 
   /**
    * 计算实时锚点位置
@@ -45,25 +45,25 @@ export struct ZSTabs {
   }
 
   // 当前指示器吸附位置索引（0-3，对应4个页签）
-  @State private currentIndicatorIndex: number = 0;
+  @Local private currentIndicatorIndex: number = 0;
   // 拖动时的实时X轴偏移量（vp），控制指示器滑动位置
-  @State private dragOffsetX: number = 0;
+  @Local private dragOffsetX: number = 0;
   // 控制材质切换（拖动/程序移动时为true，静止时为false），绑定监听函数onIsMovingChange
-  @State @Watch('onIsMovingChange') private isMoving: boolean = false;
+  @Local private isMoving: boolean = false;
   // 指示器动态宽度（vp），随滑动状态变化，实现液态拉伸/收缩效果
-  @State private animatedBarWidth: number = 92;
+  @Local private animatedBarWidth: number = 92;
   // 指示器动态高度（vp），与宽度联动，同步实现液态形变
-  @State private animatedBarHeight: number = 54;
+  @Local private animatedBarHeight: number = 54;
   // 标记是否为程序控制的指示器移动（非用户拖动），用于避免重复触发事件
-  @State private isProgrammaticChange: boolean = false;
+  @Local private isProgrammaticChange: boolean = false;
   // 上一帧的偏移量，用于计算滑动速度
-  @State private lastOffsetX: number = 0;
+  @Local private lastOffsetX: number = 0;
   // 当前滑动速度（vp/帧），用于控制液态形变程度
-  @State private currentVelocity: number = 0;
+  @Local private currentVelocity: number = 0;
   // 速度引起的宽度形变量（vp），随速度变化，模拟液态流动拉伸
-  @State private velocityDeformationWidth: number = 0;
+  @Local private velocityDeformationWidth: number = 0;
   // 速度引起的高度形变量（vp），与宽度形变反向，增强液态真实感
-  @State private velocityDeformationHeight: number = 0;
+  @Local private velocityDeformationHeight: number = 0;
 
   // 移动时指示器的基础宽度（vp）
   private readonly BASE_MOVING_WIDTH: number = 110;
@@ -76,7 +76,7 @@ export struct ZSTabs {
   // 速度归一化基准值（vp/帧），用于将实际速度映射到0-1区间，控制形变程度
   private readonly VELOCITY_NORMALIZE_BASE: number = 25;
   // 平滑后的速度值，用于减少速度波动，让液态形变更流畅
-  @State private smoothedVelocity: number = 0;
+  @Local private smoothedVelocity: number = 0;
   // 本次拖动/停顿后的初始方向：1=右，-1=左，0=未设置，用于控制形变方向
   private initialDragDirection: number = 0;
   // 上次有显著速度时的时间戳（ms），用于检测滑动停顿
@@ -88,20 +88,20 @@ export struct ZSTabs {
   // 停顿判定的速度阈值（vp/帧），低于此值视为静止
   private readonly PAUSE_VELOCITY_THRESHOLD: number = 0.3;
   // 是否靠近锚点（用于控制图标/文本的模糊效果，靠近时取消模糊）
-  @State private isNearAnchor: boolean = false;
+  @Local private isNearAnchor: boolean = false;
   // 实时显示的锚点索引（滑动过程中动态更新，用于同步显示当前靠近的页签图标/文本）
-  @State private displayIndex: number = 0;
+  @Local private displayIndex: number = 0;
   // 锚点接近阈值（vp），距离锚点小于该值则视为靠近锚点
   private readonly ANCHOR_PROXIMITY_THRESHOLD: number = 28;
 
   // HdsTabs控制器，用于控制tabbar的页签切换
   private tabsController: HdsTabsController = new HdsTabsController();
   // 当前激活的tab索引，绑定监听函数onActiveTabChange，同步指示器位置
-  @State @Watch('onActiveTabChange') private activeTabIndex: number = 0;
+  @Local private activeTabIndex: number = 0;
   // 控制TabContent页面显示的索引，与选中页签同步
-  @State currentTabIndex: number = 0;
+  @Local currentTabIndex: number = 0;
   // 选中的tab索引，用于控制页签图标/文本的样式切换（填充/镂空、颜色变化）
-  @State selectedTabIndex: number = 0;
+  @Local selectedTabIndex: number = 0;
 
   // 页签标题数组，对应4个页签的文本
   private tabTitles: string[] = ['首页', '二页', '三页', '四页'];
@@ -112,6 +112,7 @@ export struct ZSTabs {
    * 激活页签变化监听函数
    * 当页签通过点击切换时，同步移动指示器至对应位置，触发液态动效
    */
+  @Monitor("activeTabIndex")
   private onActiveTabChange(): void {
     // 若为程序控制移动，直接返回，避免重复处理
     if (this.isProgrammaticChange) return;
@@ -137,6 +138,7 @@ export struct ZSTabs {
    * 移动状态变化监听函数
    * 当isMoving状态改变时，调整指示器的尺寸、形变及模糊效果，实现液态静止/流动切换
    */
+  @Monitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     if (!this.isMoving) {

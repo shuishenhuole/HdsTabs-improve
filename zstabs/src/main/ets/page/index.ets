@@ -119,7 +119,7 @@ export struct ZSTabs {
     // 标记为移动状态，触发材质与尺寸变化
     this.isMoving = true;
     // 执行指示器移动动画，时长300ms，使用弹簧曲线，确保动效流畅
-    animateTo({ duration: 300, curve: curves.springMotion() }, () => {
+    this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
       this.currentIndicatorIndex = this.activeTabIndex; // 同步指示器索引
       this.displayIndex = this.activeTabIndex; // 同步显示的页签图标/文本
       this.dragOffsetX = 0; // 重置偏移量，回到锚点位置
@@ -137,7 +137,8 @@ export struct ZSTabs {
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     if (!this.isMoving) {
-      animateTo({ curve: curves.springMotion() }, () => {
+
+      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
         this.animatedBarWidth = 92; // 重置为静止时的宽度
         this.animatedBarHeight = 54; // 重置为静止时的高度
         this.velocityDeformationWidth = 0; // 重置宽度形变
@@ -152,7 +153,7 @@ export struct ZSTabs {
       this.pauseDetected = false;
     } else {
       // 移动状态：调整指示器为基础移动尺寸，准备形变
-      animateTo({ curve: curves.springMotion() }, () => {
+      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
         this.animatedBarWidth = this.BASE_MOVING_WIDTH;
         this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
       });
@@ -252,7 +253,7 @@ export struct ZSTabs {
 
     // 若靠近状态发生变化且非移动状态，执行轻微动画，提升过渡流畅度
     if (wasNearAnchor !== this.isNearAnchor && !this.isMoving) {
-      animateTo({ duration: 150, curve: Curve.EaseInOut }, () => {});
+      this.getUIContext().animateTo({ duration: 150, curve: Curve.EaseInOut }, () => {});
     }
   }
 
@@ -479,7 +480,7 @@ export struct ZSTabs {
                 this.isProgrammaticChange = true; // 标记为程序控制移动
                 this.isMoving = true;
                 // 指示器移动到新锚点位置，动画时长300ms
-                animateTo({ duration: 300, curve: curves.springMotion() }, () => {
+                this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
                   this.currentIndicatorIndex = newIndex;
                   this.displayIndex = newIndex;
                   this.dragOffsetX = 0; // 复位偏移量
@@ -494,7 +495,7 @@ export struct ZSTabs {
                 }, 310);
               } else {
                 // 索引未变化，仅复位偏移量，回到当前锚点
-                animateTo({ duration: 200, curve: curves.springMotion() }, () => {
+                this.getUIContext().animateTo({ duration: 200, curve: curves.springMotion() }, () => {
                   this.dragOffsetX = 0;
                 });
               }

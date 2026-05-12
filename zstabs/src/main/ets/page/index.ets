@@ -1,9 +1,13 @@
 import { HdsNavigation, HdsTabs, ScrollEffectType } from '@hms.hds.hdsBaseComponent';
 import { hdsMaterial, HdsNavigationTitleMode, HdsTabsController } from '@kit.UIDesignKit';
 import { deviceInfo } from '@kit.BasicServicesKit';
-import { HdsMiniBarButton } from 'hds_button';
 import { curves } from '@kit.ArkUI';
 import { TabConstants, IndicatorConstants, VelocityConstants, AnimationConstants, ColorConstants, TabConfig } from '../common/constant';
+import { AnchorCalculator } from '../utils/AnchorCalculator';
+import { VelocityDeformationCalculator } from '../utils/VelocityDeformationCalculator';
+import { GestureHandler } from '../utils/GestureHandler';
+import { LiquidIndicator } from '../components/LiquidIndicator';
+import { TabItemBuilder } from '../builder/TabItemBuilder';
 
 
 @ComponentV2

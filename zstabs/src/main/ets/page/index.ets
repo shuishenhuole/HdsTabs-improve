@@ -3,11 +3,7 @@ import { hdsMaterial, HdsNavigationTitleMode, HdsTabsController } from '@kit.UID
 import { deviceInfo } from '@kit.BasicServicesKit';
 import { curves } from '@kit.ArkUI';
 import { TabConstants, IndicatorConstants, VelocityConstants, AnimationConstants, ColorConstants, TabConfig } from '../common/constant';
-import { AnchorCalculator } from '../utils/AnchorCalculator';
-import { VelocityDeformationCalculator } from '../utils/VelocityDeformationCalculator';
-import { GestureHandler } from '../utils/GestureHandler';
-import { LiquidIndicator } from '../components/LiquidIndicator';
-import { TabItemBuilder } from '../builder/TabItemBuilder';
+import { HdsMiniBarButton } from 'hds_button';
 
 
 @ComponentV2
@@ -290,7 +286,11 @@ export struct ZSTabs {
           .barOverlap(true) // 允许tabbar与内容重叠，实现沉浸效果
           // 悬浮样式配置，设置tabbar的宽度、间距、颜色及沉浸材质
           .barFloatingStyle({
-            barWidth: { smallWidth: TabConstants.BAR_WIDTH_SMALL, mediumWidth: TabConstants.BAR_WIDTH_MEDIUM, largeWidth: TabConstants.BAR_WIDTH_LARGE },
+            barWidth: {
+              smallWidth: TabConstants.BAR_WIDTH_SMALL,
+              mediumWidth: TabConstants.BAR_WIDTH_MEDIUM,
+              largeWidth: TabConstants.BAR_WIDTH_LARGE
+            },
             adaptToHandedness: true,
             lightColor: ColorConstants.LIGHT_COLOR,
             barBottomMargin: TabConstants.BAR_BOTTOM_MARGIN,

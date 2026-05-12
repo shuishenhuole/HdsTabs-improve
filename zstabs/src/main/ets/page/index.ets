@@ -4,10 +4,8 @@ import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用�
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
 
-
-@Entry
 @Component
-struct ZSTabs {
+export struct ZSTabs {
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @State illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
 
@@ -108,7 +106,7 @@ struct ZSTabs {
   // 页签标题数组，对应4个页签的文本
   private tabTitles: string[] = ['首页', '二页', '三页', '四页'];
   // 页签图标数组，对应4个页签的图标资源
-  private tabIcons: Resource[] = [$r('app.media.puzzle'), $r('app.media.eye'), $r('app.media.picture'), $r('app.media.doc_text')];
+  private tabIcons: Resource[] = [$r('sys.media.clone_app_badge_1'), $r('sys.media.ohos_ic_public_edit'), $r('sys.media.ohos_ic_public_share'), $r('sys.media.ohos_ic_public_remove')];
 
   /**
    * 激活页签变化监听函数
@@ -420,7 +418,7 @@ struct ZSTabs {
             .width(92)
             .height(54)
             .borderRadius(30)
-            .backgroundColor(this.isMoving? '#00ffffff':$r('app.color.zhishiqi')) // 移动时透明，静止时显示指定颜色
+            .backgroundColor(Color.Transparent) // 移动时透明，静止时显示指定颜色
             .animation({curve:curves.springMotion()}) // 遮罩切换动画
           }
           .borderRadius(30)
@@ -511,7 +509,7 @@ struct ZSTabs {
         })
         .animation({curve:curves.springMotion()}) // 位置变化动画，确保流畅
       }
-      .margin({bottom:28})
+      .margin({bottom:0})
       .width(330) // 与tabbar宽度一致
       .height(59) // 与tabbar高度一致
       .clip(false) // 不裁剪，允许指示器溢出
@@ -547,7 +545,7 @@ struct ZSTabs {
       if (typeof icon === 'string') {
         Text(icon)
           .fontSize(24)
-          .fontColor(this.selectedTabIndex === index ? $r('app.color.progress_distance_color') : $r('app.color.text_secondary'))
+          .fontColor($r('sys.color.warning'))
           .margin({ bottom: 2 })
       } else {
         Image(icon)
@@ -555,12 +553,12 @@ struct ZSTabs {
           .height(25)
           .objectFit(ImageFit.Contain)
           .margin({ bottom: 2 })
-          .fillColor(this.selectedTabIndex === index ? $r('app.color.progress_distance_color') : $r('app.color.text_secondary'))
+          .fillColor($r('sys.color.warning'))
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)
         .fontSize(10)
-        .fontColor(this.selectedTabIndex === index ? $r('app.color.progress_distance_colortext') : $r('app.color.text_secondary'))
+        .fontColor($r('sys.color.warning'))
         .fontWeight(this.selectedTabIndex === index ? FontWeight.Bold : FontWeight.Regular)
     }
     .width('100%')

@@ -316,7 +316,7 @@ struct shili {
 
           }
           // 页签切换事件监听，同步选中索引和激活索引
-          .onSelected((index: number) => {
+          .onChange((index: number) => {
             this.selectedTabIndex = index;
             this.activeTabIndex = index;
           })

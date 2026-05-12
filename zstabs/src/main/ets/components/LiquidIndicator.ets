@@ -61,6 +61,7 @@ export struct LiquidIndicator {
         .width('100%')
         .height('100%')
         .borderRadius(IndicatorConstants.BORDER_RADIUS)
+
       }
 
       // 半透明遮罩层
@@ -75,5 +76,6 @@ export struct LiquidIndicator {
     .clip(false)
     .width(IndicatorConstants.CONTAINER_WIDTH)
     .height(IndicatorConstants.CONTAINER_HEIGHT)
+    .animation({ curve: curves.springMotion(), duration: AnimationConstants.SWITCH_DURATION })
   }
 }

@@ -99,28 +99,24 @@ export struct ZSTabs {
    */
   @Monitor('isMoving')
   private onIsMovingChange(): void {
-    // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     if (!this.isMoving) {
-
-      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        this.animatedBarWidth = IndicatorConstants.BASE_WIDTH;
-        this.animatedBarHeight = IndicatorConstants.BASE_HEIGHT;
-        this.velocityDeformationWidth = 0; // 重置宽度形变
-        this.velocityDeformationHeight = 0; // 重置高度形变
-        this.currentVelocity = 0; // 重置速度
-        this.smoothedVelocity = 0; // 重置平滑速度
-        this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
-      });
-      // 重置拖动相关参数，为下一次拖动做准备
+      // 静止状态：直接重置，不需要动画
+      this.animatedBarWidth = IndicatorConstants.BASE_WIDTH;
+      this.animatedBarHeight = IndicatorConstants.BASE_HEIGHT;
+      this.velocityDeformationWidth = 0;
+      this.velocityDeformationHeight = 0;
+      this.currentVelocity = 0;
+      this.smoothedVelocity = 0;
+      this.displayIndex = this.currentIndicatorIndex;
+      
+      // 重置拖动相关参数
       this.initialDragDirection = 0;
       this.lastActiveTimestamp = 0;
       this.pauseDetected = false;
     } else {
-      // 移动状态：调整指示器为基础移动尺寸，准备形变
-      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        this.animatedBarWidth = IndicatorConstants.MOVING_WIDTH;
-        this.animatedBarHeight = IndicatorConstants.MOVING_HEIGHT;
-      });
+      // 移动状态：直接设置基础移动尺寸
+      this.animatedBarWidth = IndicatorConstants.MOVING_WIDTH;
+      this.animatedBarHeight = IndicatorConstants.MOVING_HEIGHT;
     }
   }
 

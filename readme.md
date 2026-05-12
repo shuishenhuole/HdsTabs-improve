@@ -1,8 +1,5 @@
 # ZSTabs - 沉浸式液态指示器TabBar
 
-## 致谢
-
-本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。
 
 ## 特性
 
@@ -39,58 +36,7 @@
 - 符合HarmonyOS API最新规范
 - 更好的UI上下文管理
 
-### 📱 屏幕适配
-- 动态计算锚点位置，适配不同屏幕尺寸
-- 响应式宽度调整
-- 支持横竖屏切换
 
-## 使用方法
+## 致谢
 
-```typescript
-import { ZSTabs } from 'zstabs'
-
-@Entry
-@ComponentV2
-struct Index {
-  build() {
-    Column() {
-      ZSTabs()
-    }
-  }
-}
-```
-
-## 技术栈
-
-- **HarmonyOS SDK**: 6.1.0 (API 23)
-- **UI框架**: ArkTS + ArkUI
-- **设计系统**: HdsNavigation, HdsTabs
-- **状态管理**: @ComponentV2 + @Local + @Monitor
-
-## 目录结构
-
-```
-zstabs/
-├── src/main/ets/
-│   ├── common/
-│   │   └── constant.ets          # 常量配置文件
-│   ├── page/
-│   │   └── index.ets             # 主组件
-│   └── builder/
-│       └── tabItem.ets           # 页签构建器
-└── oh-package.json5              # 包配置
-```
-
-## 配置说明
-
-可通过修改 `constant.ets` 文件自定义：
-
-- TabBar尺寸和间距
-- 指示器大小和圆角
-- 动画时长和效果
-- 颜色主题
-- 页签标题和图标
-
-## License
-
-Apache-2.0
+本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。

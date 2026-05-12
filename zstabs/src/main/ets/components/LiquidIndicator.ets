@@ -76,6 +76,5 @@ export struct LiquidIndicator {
     .clip(false)
     .width(IndicatorConstants.CONTAINER_WIDTH)
     .height(IndicatorConstants.CONTAINER_HEIGHT)
-    .animation({ curve: curves.springMotion(), duration: AnimationConstants.SWITCH_DURATION })
   }
 }

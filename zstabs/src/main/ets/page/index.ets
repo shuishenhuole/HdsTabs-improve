@@ -99,24 +99,29 @@ export struct ZSTabs {
    */
   @Monitor('isMoving')
   private onIsMovingChange(): void {
+    // 在状态变化前启动动画，然后修改尺寸参数
+    this.getUIContext().animateTo({ 
+      curve: curves.springMotion(), 
+      duration: AnimationConstants.SWITCH_DURATION 
+    }, () => {
+      if (!this.isMoving) {
+        this.animatedBarWidth = IndicatorConstants.BASE_WIDTH;
+        this.animatedBarHeight = IndicatorConstants.BASE_HEIGHT;
+        this.velocityDeformationWidth = 0;
+        this.velocityDeformationHeight = 0;
+        this.currentVelocity = 0;
+        this.smoothedVelocity = 0;
+        this.displayIndex = this.currentIndicatorIndex;
+      } else {
+        this.animatedBarWidth = IndicatorConstants.MOVING_WIDTH;
+        this.animatedBarHeight = IndicatorConstants.MOVING_HEIGHT;
+      }
+    });
+    
     if (!this.isMoving) {
-      // 静止状态：直接重置，不需要动画
-      this.animatedBarWidth = IndicatorConstants.BASE_WIDTH;
-      this.animatedBarHeight = IndicatorConstants.BASE_HEIGHT;
-      this.velocityDeformationWidth = 0;
-      this.velocityDeformationHeight = 0;
-      this.currentVelocity = 0;
-      this.smoothedVelocity = 0;
-      this.displayIndex = this.currentIndicatorIndex;
-      
-      // 重置拖动相关参数
       this.initialDragDirection = 0;
       this.lastActiveTimestamp = 0;
       this.pauseDetected = false;
-    } else {
-      // 移动状态：直接设置基础移动尺寸
-      this.animatedBarWidth = IndicatorConstants.MOVING_WIDTH;
-      this.animatedBarHeight = IndicatorConstants.MOVING_HEIGHT;
     }
   }
 
@@ -325,6 +330,8 @@ export struct ZSTabs {
         // 忽略系统安全区（顶部和底部），让导航栏和tabbar完全贴合屏幕
         .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
       }
+
+
       // 液态指示器容器，用于承载指示器和拖动手势
       Column() {
         Row() {
@@ -372,7 +379,9 @@ export struct ZSTabs {
               .height('100%')
               .borderRadius(IndicatorConstants.BORDER_RADIUS)
 
+
             }
+
             // 半透明遮罩，用于增强指示器的层次感，静止时显示，移动时透明
             Row() {}
             .width(IndicatorConstants.MASK_WIDTH)

@@ -6,9 +6,9 @@ import { curves } from '@kit.ArkUI';
 import { TabConstants, IndicatorConstants, VelocityConstants, AnimationConstants, ColorConstants, TabConfig } from '../common/constant';
 
 
-@Component
+@ComponentV2
 export struct ZSTabs {
-  @State private indicatorContainerWidth: number = TabConstants.BASE_CONTAINER_WIDTH;
+  @Local private indicatorContainerWidth: number = TabConstants.BASE_CONTAINER_WIDTH;
 
   /**
    * 计算实时锚点位置
@@ -39,44 +39,30 @@ export struct ZSTabs {
   }
 
   // 当前指示器吸附位置索引（0-3，对应4个页签）
-  @State private currentIndicatorIndex: number = 0;
-  // 拖动时的实时X轴偏移量（vp），控制指示器滑动位置
-  @State private dragOffsetX: number = 0;
-  // 控制材质切换（拖动/程序移动时为true，静止时为false），绑定监听函数onIsMovingChange
-  @State @Watch('onIsMovingChange') private isMoving: boolean = false;
-  // 指示器动态宽度（vp），随滑动状态变化，实现液态拉伸/收缩效果
-  @State private animatedBarWidth: number = IndicatorConstants.BASE_WIDTH;
-  // 指示器动态高度（vp），与宽度联动，同步实现液态形变
-  @State private animatedBarHeight: number = IndicatorConstants.BASE_HEIGHT;
-  // 标记是否为程序控制的指示器移动（非用户拖动），用于避免重复触发事件
-  @State private isProgrammaticChange: boolean = false;
-  // 上一帧的偏移量，用于计算滑动速度
-  @State private lastOffsetX: number = 0;
-  // 当前滑动速度（vp/帧），用于控制液态形变程度
-  @State private currentVelocity: number = 0;
-  // 速度引起的宽度形变量（vp），随速度变化，模拟液态流动拉伸
-  @State private velocityDeformationWidth: number = 0;
-  // 速度引起的高度形变量（vp），与宽度形变反向，增强液态真实感
-  @State private velocityDeformationHeight: number = 0;
-
-  @State private smoothedVelocity: number = 0;
+  @Local private currentIndicatorIndex: number = 0;
+  @Local private dragOffsetX: number = 0;
+  @Local @Monitor('onIsMovingChange') private isMoving: boolean = false;
+  @Local private animatedBarWidth: number = IndicatorConstants.BASE_WIDTH;
+  @Local private animatedBarHeight: number = IndicatorConstants.BASE_HEIGHT;
+  @Local private isProgrammaticChange: boolean = false;
+  @Local private lastOffsetX: number = 0;
+  @Local private currentVelocity: number = 0;
+  @Local private velocityDeformationWidth: number = 0;
+  @Local private velocityDeformationHeight: number = 0;
+  @Local private smoothedVelocity: number = 0;
   // 本次拖动/停顿后的初始方向：1=右，-1=左，0=未设置，用于控制形变方向
   private initialDragDirection: number = 0;
   // 上次有显著速度时的时间戳（ms），用于检测滑动停顿
   private lastActiveTimestamp: number = 0;
   private pauseDetected: boolean = false;
-  // 是否靠近锚点（用于控制图标/文本的模糊效果，靠近时取消模糊）
-  @State private isNearAnchor: boolean = false;
-  @State private displayIndex: number = 0;
+  @Local private isNearAnchor: boolean = false;
+  @Local private displayIndex: number = 0;
 
   // HdsTabs控制器，用于控制tabbar的页签切换
   private tabsController: HdsTabsController = new HdsTabsController();
-  // 当前激活的tab索引，绑定监听函数onActiveTabChange，同步指示器位置
-  @State @Watch('onActiveTabChange') private activeTabIndex: number = 0;
-  // 控制TabContent页面显示的索引，与选中页签同步
-  @State currentTabIndex: number = 0;
-  // 选中的tab索引，用于控制页签图标/文本的样式切换（填充/镂空、颜色变化）
-  @State selectedTabIndex: number = 0;
+  @Local @Monitor('onActiveTabChange') private activeTabIndex: number = 0;
+  @Local currentTabIndex: number = 0;
+  @Local selectedTabIndex: number = 0;
 
   private tabTitles: string[] = TabConfig.TITLES;
   private tabIcons: Resource[] = TabConfig.ICONS;

@@ -1,7 +1,7 @@
 {
   "app": {
     "bundleName": "com.shuishenhuole.myapplication",
-    "patchVersionCode": 2000090,
+    "patchVersionCode": 2000100,
     "versionCode": 1000000
   },
   "module": {

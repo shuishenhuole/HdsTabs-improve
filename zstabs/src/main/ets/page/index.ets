@@ -41,7 +41,7 @@ export struct ZSTabs {
   // 当前指示器吸附位置索引（0-3，对应4个页签）
   @Local private currentIndicatorIndex: number = 0;
   @Local private dragOffsetX: number = 0;
-  @Local @Monitor('onIsMovingChange') private isMoving: boolean = false;
+  @Local private isMoving: boolean = false;
   @Local private animatedBarWidth: number = IndicatorConstants.BASE_WIDTH;
   @Local private animatedBarHeight: number = IndicatorConstants.BASE_HEIGHT;
   @Local private isProgrammaticChange: boolean = false;
@@ -60,17 +60,19 @@ export struct ZSTabs {
 
   // HdsTabs控制器，用于控制tabbar的页签切换
   private tabsController: HdsTabsController = new HdsTabsController();
-  @Local @Monitor('onActiveTabChange') private activeTabIndex: number = 0;
+  @Local private activeTabIndex: number = 0;
   @Local currentTabIndex: number = 0;
   @Local selectedTabIndex: number = 0;
 
   private tabTitles: string[] = TabConfig.TITLES;
   private tabIcons: Resource[] = TabConfig.ICONS;
 
+
   /**
    * 激活页签变化监听函数
    * 当页签通过点击切换时，同步移动指示器至对应位置，触发液态动效
    */
+  @Monitor('activeTabIndex')
   private onActiveTabChange(): void {
     // 若为程序控制移动，直接返回，避免重复处理
     if (this.isProgrammaticChange) return;
@@ -95,6 +97,7 @@ export struct ZSTabs {
    * 移动状态变化监听函数
    * 当isMoving状态改变时，调整指示器的尺寸、形变及模糊效果，实现液态静止/流动切换
    */
+  @Monitor('isMoving')
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     if (!this.isMoving) {

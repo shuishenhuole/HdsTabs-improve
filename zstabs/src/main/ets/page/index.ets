@@ -1,5 +1,11 @@
 import { HdsNavigation, HdsTabs, ScrollEffectType } from '@hms.hds.hdsBaseComponent';
-import { hdsEffect, hdsMaterial, HdsNavigationMenuContentOptions, HdsNavigationTitleMode,HdsTabsController } from '@kit.UIDesignKit';
+import {
+  hdsEffect,
+  hdsMaterial,
+  HdsNavigationMenuContentOptions,
+  HdsNavigationTitleMode,
+  HdsTabsController
+} from '@kit.UIDesignKit';
 import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用于适配不同设备
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
@@ -8,7 +14,6 @@ import { curves } from '@kit.ArkUI';
 export struct ZSTabs {
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
-
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
   private readonly BASE_POSITIONS: number[] = [8.5, 85, 162.5, 241];
   // 基准容器宽度（vp），为tabbar的固定基础宽度
@@ -64,7 +69,6 @@ export struct ZSTabs {
   @Local private velocityDeformationWidth: number = 0;
   // 速度引起的高度形变量（vp），与宽度形变反向，增强液态真实感
   @Local private velocityDeformationHeight: number = 0;
-
   // 移动时指示器的基础宽度（vp）
   private readonly BASE_MOVING_WIDTH: number = 110;
   // 移动时指示器的基础高度（vp）
@@ -93,7 +97,6 @@ export struct ZSTabs {
   @Local private displayIndex: number = 0;
   // 锚点接近阈值（vp），距离锚点小于该值则视为靠近锚点
   private readonly ANCHOR_PROXIMITY_THRESHOLD: number = 28;
-
   // HdsTabs控制器，用于控制tabbar的页签切换
   private tabsController: HdsTabsController = new HdsTabsController();
   // 当前激活的tab索引，绑定监听函数onActiveTabChange，同步指示器位置
@@ -102,11 +105,12 @@ export struct ZSTabs {
   @Local currentTabIndex: number = 0;
   // 选中的tab索引，用于控制页签图标/文本的样式切换（填充/镂空、颜色变化）
   @Local selectedTabIndex: number = 0;
-
   // 页签标题数组，对应4个页签的文本
   private tabTitles: string[] = ['首页', '二页', '三页', '四页'];
   // 页签图标数组，对应4个页签的图标资源
-  private tabIcons: Resource[] = [$r('sys.media.clone_app_badge_1'), $r('sys.media.ohos_ic_public_edit'), $r('sys.media.ohos_ic_public_share'), $r('sys.media.ohos_ic_public_remove')];
+  private tabIcons: Resource[] =
+    [$r('sys.media.clone_app_badge_1'), $r('sys.media.ohos_ic_public_edit'), $r('sys.media.ohos_ic_public_share'),
+      $r('sys.media.ohos_ic_public_remove')];
 
   /**
    * 激活页签变化监听函数
@@ -115,9 +119,13 @@ export struct ZSTabs {
   @Monitor("activeTabIndex")
   private onActiveTabChange(): void {
     // 若为程序控制移动，直接返回，避免重复处理
-    if (this.isProgrammaticChange) return;
+    if (this.isProgrammaticChange) {
+      return;
+    }
     // 若当前激活索引与指示器索引一致，无需处理
-    if (this.activeTabIndex === this.currentIndicatorIndex) return;
+    if (this.activeTabIndex === this.currentIndicatorIndex) {
+      return;
+    }
 
     // 标记为移动状态，触发材质与尺寸变化
     this.isMoving = true;
@@ -141,28 +149,33 @@ export struct ZSTabs {
   @Monitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
-    if (!this.isMoving) {
-      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        this.animatedBarWidth = 92; // 重置为静止时的宽度
-        this.animatedBarHeight = 54; // 重置为静止时的高度
-        this.velocityDeformationWidth = 0; // 重置宽度形变
-        this.velocityDeformationHeight = 0; // 重置高度形变
-        this.currentVelocity = 0; // 重置速度
-        this.smoothedVelocity = 0; // 重置平滑速度
-        this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
+    const timer = setTimeout(()=>{
+      this.getUIContext().animateTo({ curve: curves.springMotion(), delay: 100 }, () => {
+        if (!this.isMoving) {
+
+
+          this.animatedBarWidth = 92; // 重置为静止时的宽度
+          this.animatedBarHeight = 54; // 重置为静止时的高度
+          this.velocityDeformationWidth = 0; // 重置宽度形变
+          this.velocityDeformationHeight = 0; // 重置高度形变
+          this.currentVelocity = 0; // 重置速度
+          this.smoothedVelocity = 0; // 重置平滑速度
+          this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
+          // 重置拖动相关参数，为下一次拖动做准备
+          this.initialDragDirection = 0;
+          this.lastActiveTimestamp = 0;
+          this.pauseDetected = false;
+        } else {
+
+          // 移动状态：调整指示器为基础移动尺寸，准备形变
+          this.animatedBarWidth = this.BASE_MOVING_WIDTH;
+          this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
+        }
       });
-      // 重置拖动相关参数，为下一次拖动做准备
-      this.initialDragDirection = 0;
-      this.lastActiveTimestamp = 0;
-      this.pauseDetected = false;
-    } else {
-     
-      // 移动状态：调整指示器为基础移动尺寸，准备形变
-      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        this.animatedBarWidth = this.BASE_MOVING_WIDTH;
-        this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
-      });
-    }
+    },10)
+
+    clearTimeout(timer)
+
   }
 
   /**
@@ -258,7 +271,8 @@ export struct ZSTabs {
 
     // 若靠近状态发生变化且非移动状态，执行轻微动画，提升过渡流畅度
     if (wasNearAnchor !== this.isNearAnchor && !this.isMoving) {
-      this.getUIContext().animateTo({ duration: 150, curve: Curve.EaseInOut }, () => {});
+      this.getUIContext().animateTo({ duration: 150, curve: Curve.EaseInOut }, () => {
+      });
     }
   }
 
@@ -283,7 +297,7 @@ export struct ZSTabs {
    */
   build() {
     // 外层Stack，将内容对齐到底部，贴合tabbar的底部导航定位
-    Stack({alignContent:Alignment.Bottom}){
+    Stack({ alignContent: Alignment.Bottom }) {
       // 适配HarmonyOS 6.1及以上版本（API 60100+），使用HdsNavigation和HdsTabs构建基础导航
       if (deviceInfo.distributionOSApiVersion >= 60100) {
         HdsNavigation() {
@@ -397,7 +411,7 @@ export struct ZSTabs {
                   .blur((this.isMoving && !this.isNearAnchor) ? 40 : 0) // 滑动时模糊，增强液态动效
                   .borderRadius(12)
                   .padding(2)
-                  .animation({duration:400,curve:Curve.Smooth}) // 图标切换动画
+                  .animation({ duration: 400, curve: Curve.Smooth }) // 图标切换动画
 
                 // 页签文本，与图标同步，滑动时添加模糊效果
                 Text(this.tabTitles[this.displayIndex])
@@ -407,7 +421,7 @@ export struct ZSTabs {
                   .blur((this.isMoving && !this.isNearAnchor) ? 40 : 0) // 滑动时模糊
                   .padding(2)
                   .borderRadius(15)
-                  .animation({curve:curves.springMotion()}) // 文本切换动画
+                  .animation({ curve: curves.springMotion() }) // 文本切换动画
               }
               .justifyContent(FlexAlign.Center) // 垂直居中
               .alignItems(HorizontalAlign.Center) // 水平居中
@@ -416,13 +430,15 @@ export struct ZSTabs {
               .borderRadius(30) // 圆角，贴合液态指示器的圆润风格
 
             }
+
             // 半透明遮罩，用于增强指示器的层次感，静止时显示，移动时透明
-            Row() {}
+            Row() {
+            }
             .width(92)
             .height(54)
             .borderRadius(30)
             .backgroundColor(Color.Transparent) // 移动时透明，静止时显示指定颜色
-            .animation({curve:curves.springMotion()}) // 遮罩切换动画
+            .animation({ curve: curves.springMotion() }) // 遮罩切换动画
           }
           .borderRadius(30)
           .clip(false) // 不裁剪，允许指示器轻微溢出，增强液态质感
@@ -510,9 +526,9 @@ export struct ZSTabs {
         .position({
           x: this.getAnchorPosition()
         })
-        .animation({curve:curves.springMotion()}) // 位置变化动画，确保流畅
+        .animation({ curve: curves.springMotion() }) // 位置变化动画，确保流畅
       }
-      .margin({bottom:0})
+      .margin({ bottom: 0 })
       .width(330) // 与tabbar宽度一致
       .height(59) // 与tabbar高度一致
       .clip(false) // 不裁剪，允许指示器溢出
@@ -569,5 +585,4 @@ export struct ZSTabs {
     .alignItems(HorizontalAlign.Center)
     .justifyContent(FlexAlign.Center)
   }
-
 }

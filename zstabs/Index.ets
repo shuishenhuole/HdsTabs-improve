@@ -1,2 +1,2 @@
-export { ZooTabs } from './src/main/ets/page'
+export { ZSTabs } from './src/main/ets/page'
 

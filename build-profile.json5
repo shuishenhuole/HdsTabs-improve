@@ -53,8 +53,8 @@
       ]
     },
     {
-      "name": "Tabs",
-      "srcPath": "./Tabs",
+      "name": "zstabs",
+      "srcPath": "./zstabs"
     }
   ]
 }

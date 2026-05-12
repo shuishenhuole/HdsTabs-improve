@@ -8,9 +8,6 @@ import { curves } from '@kit.ArkUI';
 @Entry
 @Component
 struct shili {
-  // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
-  @State illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
-
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
   private readonly BASE_POSITIONS: number[] = [8.5, 85, 162.5, 241];
   // 基准容器宽度（vp），为tabbar的固定基础宽度

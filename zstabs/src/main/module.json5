@@ -1,6 +1,6 @@
 {
   "module": {
-    "name": "Tabs",
+    "name": "zstabs",
     "type": "har",
     "deviceTypes": [
       "default",

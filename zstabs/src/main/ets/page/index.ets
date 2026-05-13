@@ -11,6 +11,7 @@ import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组
 import { curves } from '@kit.ArkUI';
 import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
 import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
+import { ZSTabsConstance } from '../common/constant';
 
 @ComponentV2
 export struct ZSTabs {
@@ -293,7 +294,6 @@ export struct ZSTabs {
     Stack({ alignContent: Alignment.Bottom }) {
       // 适配HarmonyOS 6.1及以上版本（API 60100+），使用HdsNavigation和HdsTabs构建基础导航
       if (deviceInfo.distributionOSApiVersion >= 60100) {
-        HdsNavigation() {
           // HdsTabs组件，作为页签容器，绑定控制器和当前激活索引
           HdsTabs({
             controller: this.tabsController,
@@ -309,31 +309,6 @@ export struct ZSTabs {
                 index
               ))
             })
-
-            // // 第1个页签内容（可根据实际需求填充页面内容）
-            // TabContent() {
-            //
-            // }
-            // .tabBar(this.TabItemBuilder('首页', $r('sys.media.ohos_ic_public_remove'), 0)) // 绑定页签样式构建器
-            //
-            // // 第2个页签内容
-            // TabContent() {
-            //
-            // }
-            // .tabBar(this.TabItemBuilder('二页', $r('sys.media.ohos_ic_public_share'), 1))
-            //
-            // // 第3个页签内容
-            // TabContent() {
-            //
-            // }
-            // .tabBar(this.TabItemBuilder('三页', $r('sys.media.ohos_ic_public_edit'), 2))
-            //
-            // // 第4个页签内容
-            // TabContent() {
-            //
-            // }
-            // .tabBar(this.TabItemBuilder('四页', $r('sys.media.clone_app_badge_1'), 3))
-
           }
           // 页签切换事件监听，同步选中索引和激活索引
           .onChange((index: number) => {
@@ -355,41 +330,13 @@ export struct ZSTabs {
             }, // 固定宽度，适配不同屏幕尺寸
             adaptToHandedness: true, // 适配左右手操作习惯
             lightColor: '#ff00eaff', // 浅色模式下的颜色
-            barBottomMargin: 28, // 底部间距，避免被系统导航栏遮挡
+            barBottomMargin: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin, // 底部间距，避免被系统导航栏遮挡
             // 系统材质效果，设置为沉浸光感，精致级别，贴合HarmonyOS 6设计语言
             systemMaterialEffect: {
               materialType: hdsMaterial.MaterialType.IMMERSIVE,
               materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
             }
           })
-        }
-        .height('100%')
-        .width('100%')
-        .mode(NavigationMode.Stack) // 导航模式为栈模式
-        .hideBackButton(false) // 显示返回按钮（可根据需求调整）
-        .titleMode(HdsNavigationTitleMode.MODAL) // 标题模式为模态
-        // 标题栏配置，设置滚动效果和沉浸材质，与tabbar风格统一
-        .titleBar({
-          content: {
-            title: {
-              mainTitle: '', // 标题为空，可根据实际需求设置
-            },
-          },
-          style: {
-            scrollEffectOpts: {
-              enableScrollEffect: true,
-              scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR, // 沉浸式渐变模糊效果
-            },
-            systemMaterialEffect: {
-              materialType: hdsMaterial.MaterialType.IMMERSIVE,
-              materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
-            },
-          },
-          avoidLayoutSafeArea: false, // 不避开布局安全区，实现全屏沉浸
-          enableComponentSafeArea: false
-        })
-        // 忽略系统安全区（顶部和底部），让导航栏和tabbar完全贴合屏幕
-        .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
       }
       // 液态指示器容器，用于承载指示器和拖动手势
       Column() {
@@ -536,7 +483,7 @@ export struct ZSTabs {
         })
         .animation({ curve: curves.springMotion() }) // 位置变化动画，确保流畅
       }
-      .margin({ bottom: 0 })
+      .margin({ bottom: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin})
       .width(330) // 与tabbar宽度一致
       .height(59) // 与tabbar高度一致
       .clip(false) // 不裁剪，允许指示器溢出

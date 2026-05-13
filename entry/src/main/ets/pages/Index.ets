@@ -33,13 +33,6 @@ struct Index {
               icon:$r('sys.media.ohos_ic_public_remove'),
               builder:wrapBuilder(myBuilderT)
             },
-
-            {
-              title:"第二页",
-              color:$r('app.color.start_window_background'),
-              icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(myBuilder)
-            },
             {
               title:"第二页",
               color:$r('app.color.start_window_background'),

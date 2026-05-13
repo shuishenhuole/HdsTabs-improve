@@ -8,6 +8,7 @@ export interface ZSTabsItem{
 
 export interface ZSTabsOptions{
   tabItems:ZSTabsItem[],
-  maskColor:ResourceColor
+  maskColor:ResourceColor,
+  barBottomMargin?:number|Resource
 }
 

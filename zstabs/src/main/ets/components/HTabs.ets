@@ -15,8 +15,8 @@ import { ZSTabsConstance } from '../common/constant';
 export struct HTabs {
   @Param @Require tabsOption: ZSTabsOptions
   // 当前指示器吸附位置索引（0-3，对应4个页签）
-  @Param currentIndicatorIndex: number = 0
-  @Event $currentIndicatorIndex: (val: number) => void = (val: number) => {
+  @Param currentIndex: number = 0
+  @Event onCurrentIndexChange: (val: number) => void = (val: number) => {
   }
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
@@ -43,7 +43,7 @@ export struct HTabs {
    */
   private getAnchorPosition(): number {
     const positions = this.getAnchorPositions();
-    return positions[this.currentIndicatorIndex];
+    return positions[this.currentIndex];
   }
 
   /**
@@ -126,7 +126,7 @@ export struct HTabs {
       return;
     }
     // 若当前激活索引与指示器索引一致，无需处理
-    if (this.activeTabIndex === this.currentIndicatorIndex) {
+    if (this.activeTabIndex === this.currentIndex) {
       return;
     }
 
@@ -135,7 +135,7 @@ export struct HTabs {
     // 执行指示器移动动画，时长300ms，使用弹簧曲线，确保动效流畅
     curves.springMotion()
     this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
-      this.$currentIndicatorIndex(this.activeTabIndex) // 同步指示器索引
+      this.onCurrentIndexChange(this.activeTabIndex)// 同步指示器索引
       this.displayIndex = this.activeTabIndex; // 同步显示的页签图标/文本
       this.dragOffsetX = 0; // 重置偏移量，回到锚点位置
     });
@@ -160,7 +160,7 @@ export struct HTabs {
         this.velocityDeformationHeight = 0; // 重置高度形变
         this.currentVelocity = 0; // 重置速度
         this.smoothedVelocity = 0; // 重置平滑速度
-        this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
+        this.displayIndex = this.currentIndex; // 同步显示当前选中页签
         // 重置拖动相关参数，为下一次拖动做准备
         this.initialDragDirection = 0;
         this.lastActiveTimestamp = 0;
@@ -247,7 +247,7 @@ export struct HTabs {
     const positions = this.getAnchorPositions(); // 所有锚点位置
 
     let nearestDistance = Infinity; // 最近距离，初始设为无穷大
-    let nearestIndex: number = this.currentIndicatorIndex; // 最近锚点索引，初始为当前索引
+    let nearestIndex: number = this.currentIndex; // 最近锚点索引，初始为当前索引
 
     // 遍历所有锚点，找到距离当前位置最近的锚点
     for (let i = 0; i < positions.length; i++) {
@@ -293,8 +293,6 @@ export struct HTabs {
   build() {
     // 外层Stack，将内容对齐到底部，贴合tabbar的底部导航定位
     Stack({ alignContent: Alignment.Bottom }) {
-      // 适配HarmonyOS 6.1及以上版本（API 60100+），使用HdsNavigation和HdsTabs构建基础导航
-      if (deviceInfo.distributionOSApiVersion >= 60100) {
         // HdsTabs组件，作为页签容器，绑定控制器和当前激活索引
         HdsTabs({
           controller: this.tabsController,
@@ -340,7 +338,6 @@ export struct HTabs {
             materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
           }
         })
-      }
       // 液态指示器容器，用于承载指示器和拖动手势
       Column() {
         Row() {
@@ -416,7 +413,7 @@ export struct HTabs {
               this.lastOffsetX = 0;
               this.currentVelocity = 0;
               this.smoothedVelocity = 0;
-              this.displayIndex = this.currentIndicatorIndex;
+              this.displayIndex = this.currentIndex;
               this.initialDragDirection = 0;
               this.lastActiveTimestamp = 0;
               this.pauseDetected = false;
@@ -432,9 +429,9 @@ export struct HTabs {
               }
 
               // 边界处理：第一个页签向左拖动、最后一个页签向右拖动时，偏移量衰减（增强手感）
-              if (this.currentIndicatorIndex === 0 && event.offsetX < 0) {
+              if (this.currentIndex === 0 && event.offsetX < 0) {
                 this.dragOffsetX = event.offsetX * 0.3;
-              } else if (this.currentIndicatorIndex === 3 && event.offsetX > 0) {
+              } else if (this.currentIndex === 3 && event.offsetX > 0) {
                 this.dragOffsetX = event.offsetX * 0.3;
               } else {
                 this.dragOffsetX = event.offsetX; // 正常拖动，直接赋值偏移量
@@ -452,16 +449,16 @@ export struct HTabs {
               // 计算拖动的页签数量（四舍五入，超过半格则切换页签）
               const movedSlots = Math.round(this.dragOffsetX / slotWidth);
               // 计算新的页签索引，限制在0-3之间（避免越界）
-              let newIndex = this.currentIndicatorIndex + movedSlots;
+              let newIndex = this.currentIndex + movedSlots;
               newIndex = Math.max(0, Math.min(3, newIndex));
 
               // 若索引发生变化，执行页签切换动画
-              if (newIndex !== this.currentIndicatorIndex) {
+              if (newIndex !== this.currentIndex) {
                 this.isProgrammaticChange = true; // 标记为程序控制移动
                 this.isMoving = true;
                 // 指示器移动到新锚点位置，动画时长300ms
                 this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
-                  this.$currentIndicatorIndex(newIndex)
+                  this.onCurrentIndexChange(newIndex)
                   this.displayIndex = newIndex;
                   this.dragOffsetX = 0; // 复位偏移量
                 });

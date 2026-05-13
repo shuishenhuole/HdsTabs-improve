@@ -35,7 +35,8 @@ ohpm install @shuishenhuole/zstabs
 ## 使用示例
 
 ```typescript
-import { ZSTabs } from 'zstabs'
+import { ZSTabs } from '@shuishenhuole/zstabs'
+
 @Builder
 function HomeBuilder(){
   Stack(){
@@ -70,7 +71,7 @@ struct Index {
   build() {
     Column(){
       ZSTabs({
-        currentIndicatorIndex:this.Index!!,
+        currentIndex:this.Index!!,
         tabsOption:{
           tabItems:[
             {
@@ -115,7 +116,7 @@ struct Index {
 ### 核心组件ZSTabs
 | 参数 | 类型            | 必填 | 默认值 | 说明                    |
 |------|---------------|------|--------|-----------------------|
-| currentIndicatorIndex | number        | 是 | - | tabbar的当前页索引 使用!!双向绑定 |
+| currentIndex | number        | 是 | - | tabbar的当前页索引 使用!!双向绑定 |
 | tabsOption | tabsOption    | 是 | - | tab的配置项               |
 | maskColor | ResourceColor | 否 | 20 | 按压的光感颜色               |
 
@@ -137,6 +138,19 @@ struct Index {
 | selectColor | ResourceColor | 否 | - | 页签选中时的颜色 |
 | builder | WrappedBuilder<[]> | 是 | - | 页签内容构建器 |
 
+### 兼容性
+在api23及以上可用如果低于版本会只用默认tabs
+如果需要对tabs实现一次开发多端部署可以在
+
+EntryAbility.ets
+```typescript
+onWindowStageCreate(windowStage: window.WindowStage): void {
+  ...
+  ZSBreakPoint.init(windowStage)
+  ...
+    });
+  }
+```
 ## 致谢
 
 本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。

@@ -9,6 +9,7 @@ import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
 import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
 import { ZSTabsConstance } from '../common/constant';
 import { HdsMiniBarButton } from './HdsMiniBarButton';
+import { showToast } from '../utils/toast';
 
 @ComponentV2
 export struct HTabs {
@@ -435,7 +436,6 @@ export struct HTabs {
               } else {
                 this.dragOffsetX = event.offsetX; // 正常拖动，直接赋值偏移量
               }
-
               // 移动状态下，检测是否靠近锚点
               if (this.isMoving) {
                 this.checkIfNearAnchor();

@@ -8,7 +8,7 @@ export function getBasePositions(len:number):number[]{
     return [45,106]
   }
   else if(len === 3){
-    return [29,105,183]
+    return [30,105,182]
   }
   else if(len === 4){
     return [8.5,85,162.5,241]

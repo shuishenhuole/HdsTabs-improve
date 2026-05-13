@@ -40,3 +40,4 @@
 ## 致谢
 
 本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。
+核心光感来自[hds_button](https://ohpm.openharmony.cn/#/cn/detail/hds_button) 感谢开源

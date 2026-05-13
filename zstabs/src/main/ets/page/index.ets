@@ -10,18 +10,19 @@ import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用�
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
 import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
+import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
 
 @ComponentV2
 export struct ZSTabs {
-  @Param @Require tabsOption:ZSTabsOptions
+  @Param @Require tabsOption: ZSTabsOptions
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
-  private readonly BASE_POSITIONS: number[] = [8.5, 85, 162.5, 241];
+  private readonly BASE_POSITIONS: number[] = getBasePositions(this.tabsOption.tabItems.length)
   // 基准容器宽度（vp），为tabbar的固定基础宽度
-  private readonly BASE_CONTAINER_WIDTH: number = 330;
+  private readonly BASE_CONTAINER_WIDTH: number = getBaseContainerWidth(this.tabsOption.tabItems.length)
   // 指示器容器实时宽度，用于适配不同设备/屏幕尺寸的动态调整
-  @Local private indicatorContainerWidth: number = 330;
+  @Local private indicatorContainerWidth: number = getBaseContainerWidth(this.tabsOption.tabItems.length)
 
   /**
    * 计算实时锚点位置
@@ -108,9 +109,9 @@ export struct ZSTabs {
   // 选中的tab索引，用于控制页签图标/文本的样式切换（填充/镂空、颜色变化）
   @Local selectedTabIndex: number = 0;
   // 页签标题数组，对应4个页签的文本
-  private tabTitles: string[] = this.tabsOption.tabItems.map((item:ZSTabsItem)=>item.title)
+  private tabTitles: string[] = this.tabsOption.tabItems.map((item: ZSTabsItem) => item.title)
   // 页签图标数组，对应4个页签的图标资源
-  private tabIcons: Resource[] = this.tabsOption.tabItems.map((item:ZSTabsItem)=> item.icon)
+  private tabIcons: Resource[] = this.tabsOption.tabItems.map((item: ZSTabsItem) => item.icon)
 
   /**
    * 激活页签变化监听函数
@@ -149,30 +150,25 @@ export struct ZSTabs {
   @Monitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
-
-      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        if (!this.isMoving) {
-          this.animatedBarWidth = 92; // 重置为静止时的宽度
-          this.animatedBarHeight = 54; // 重置为静止时的高度
-          this.velocityDeformationWidth = 0; // 重置宽度形变
-          this.velocityDeformationHeight = 0; // 重置高度形变
-          this.currentVelocity = 0; // 重置速度
-          this.smoothedVelocity = 0; // 重置平滑速度
-          this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
-          // 重置拖动相关参数，为下一次拖动做准备
-          this.initialDragDirection = 0;
-          this.lastActiveTimestamp = 0;
-          this.pauseDetected = false;
-        } else {
-            // 移动状态：调整指示器为基础移动尺寸，准备形变
-            this.animatedBarWidth = this.BASE_MOVING_WIDTH;
-            this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
-        }
-      });
-
-
-    // clearTimeout(timer)
-
+    this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+      if (!this.isMoving) {
+        this.animatedBarWidth = 92; // 重置为静止时的宽度
+        this.animatedBarHeight = 54; // 重置为静止时的高度
+        this.velocityDeformationWidth = 0; // 重置宽度形变
+        this.velocityDeformationHeight = 0; // 重置高度形变
+        this.currentVelocity = 0; // 重置速度
+        this.smoothedVelocity = 0; // 重置平滑速度
+        this.displayIndex = this.currentIndicatorIndex; // 同步显示当前选中页签
+        // 重置拖动相关参数，为下一次拖动做准备
+        this.initialDragDirection = 0;
+        this.lastActiveTimestamp = 0;
+        this.pauseDetected = false;
+      } else {
+        // 移动状态：调整指示器为基础移动尺寸，准备形变
+        this.animatedBarWidth = this.BASE_MOVING_WIDTH;
+        this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
+      }
+    });
   }
 
   /**
@@ -303,8 +299,8 @@ export struct ZSTabs {
             controller: this.tabsController,
             index: this.activeTabIndex  // 绑定当前激活的页签索引
           }) {
-            ForEach(this.tabsOption.tabItems,(item:ZSTabsItem,index:number)=>{
-              TabContent(){
+            ForEach(this.tabsOption.tabItems, (item: ZSTabsItem, index: number) => {
+              TabContent() {
                 item.builder.builder()
               }
               .tabBar(this.TabItemBuilder(
@@ -352,7 +348,11 @@ export struct ZSTabs {
           .barOverlap(true) // 允许tabbar与内容重叠，实现沉浸效果
           // 悬浮样式配置，设置tabbar的宽度、间距、颜色及沉浸材质
           .barFloatingStyle({
-            barWidth: { smallWidth: 330, mediumWidth: 330, largeWidth: 330 }, // 固定宽度，适配不同屏幕尺寸
+            barWidth: {
+              smallWidth: this.BASE_CONTAINER_WIDTH,
+              mediumWidth: this.BASE_CONTAINER_WIDTH,
+              largeWidth: this.BASE_CONTAINER_WIDTH
+            }, // 固定宽度，适配不同屏幕尺寸
             adaptToHandedness: true, // 适配左右手操作习惯
             lightColor: '#ff00eaff', // 浅色模式下的颜色
             barBottomMargin: 28, // 底部间距，避免被系统导航栏遮挡

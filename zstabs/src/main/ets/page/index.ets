@@ -363,7 +363,7 @@ export struct ZSTabs {
                   .height(30)
                   .objectFit(ImageFit.Contain)
                   .fillColor('#ffff923e') // 图标颜色，与指示器形成对比度
-                  .blur((this.isMoving && !this.isNearAnchor) ? 40 : 0) // 滑动时模糊，增强液态动效
+                  .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊，增强液态动效
                   .borderRadius(12)
                   .padding(2)
                   .animation({ duration: 400, curve: Curve.Smooth }) // 图标切换动画
@@ -373,7 +373,7 @@ export struct ZSTabs {
                   .fontSize(9)
                   .fontColor('#ffff923e') // 文本颜色，与图标一致，确保可读性
                   .fontWeight(FontWeight.Normal)
-                  .blur((this.isMoving && !this.isNearAnchor) ? 40 : 0) // 滑动时模糊
+                  .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊
                   .padding(2)
                   .borderRadius(15)
                   .animation({ curve: curves.springMotion() }) // 文本切换动画

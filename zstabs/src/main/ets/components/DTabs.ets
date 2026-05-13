@@ -5,8 +5,8 @@ import { ZSTabsItem, ZSTabsOptions } from "../common/TabsOptions"
 export struct DTabs {
   @Param @Require tabsOption: ZSTabsOptions
   // 当前指示器吸附位置索引（0-3，对应4个页签）
-  @Param currentIndicatorIndex: number = 0
-  @Event $currentIndicatorIndex: (val: number) => void = (val: number) => {
+  @Param currentIndex: number = 0
+  @Event onCurrentIndexChange: (val: number) => void = (val: number) => {
   }
 
   build() {
@@ -18,13 +18,13 @@ export struct DTabs {
         xl: BarPosition.Start,
         default:BarPosition.End
       }).getValue(),
-      index: this.currentIndicatorIndex
+      index: this.currentIndex!!
     }) {
       ForEach(this.tabsOption.tabItems, (item: ZSTabsItem, index: number) => {
         TabContent() {
           Column(){
             item.builder.builder()
-            Text(this.currentIndicatorIndex.toString())
+            Text(this.currentIndex.toString())
           }
         }
         .tabBar(this.TabItemBuilder(
@@ -37,7 +37,7 @@ export struct DTabs {
       })
     }
     .onChange((val:number)=>{
-      this.$currentIndicatorIndex(val)
+      this.onCurrentIndexChange(val)
     })
   }
 
@@ -56,7 +56,7 @@ export struct DTabs {
       if (typeof icon === 'string') {
         Text(icon)
           .fontSize(24)
-          .fontColor(index === this.currentIndicatorIndex ? selectColor : color)
+          .fontColor(index === this.currentIndex ? selectColor : color)
           .margin({ bottom: 2 })
       } else {
         Image(icon)
@@ -64,13 +64,13 @@ export struct DTabs {
           .height(25)
           .objectFit(ImageFit.Contain)
           .margin({ bottom: 2 })
-          .fillColor(index === this.currentIndicatorIndex ? selectColor : color)
+          .fillColor(index === this.currentIndex ? selectColor : color)
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)
         .fontSize(10)
-        .fontColor(index === this.currentIndicatorIndex ? selectColor : color)
-        .fontWeight(this.currentIndicatorIndex === index ? FontWeight.Bold : FontWeight.Regular)
+        .fontColor(index === this.currentIndex ? selectColor : color)
+        .fontWeight(this.currentIndex === index ? FontWeight.Bold : FontWeight.Regular)
     }
     .width('100%')
     .height('100%')

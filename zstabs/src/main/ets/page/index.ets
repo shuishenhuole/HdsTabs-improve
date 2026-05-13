@@ -5,21 +5,21 @@ import { HTabs } from "../components/HTabs"
 @ComponentV2
 export struct ZSTabs {
   @Param @Require tabsOption: ZSTabsOptions
-  @Param currentIndicatorIndex: number = 0
-  @Event $currentIndicatorIndex: (val: number) => void = (val: number) => {
-  }
-  aboutToAppear() {
-
-  }
-  aboutToDisappear() {
-
+  @Param currentIndex: number = 0
+  @Event $currentIndex: (val: number) => void = (val: number) => {
   }
   build() {
     Column(){
-      Text(this.currentIndicatorIndex.toString())
+      Text(this.currentIndex.toString())
+        .onClick(()=>{
+          this.$currentIndex(this.currentIndex)
+        })
       DTabs({
+        currentIndex:this.currentIndex,
+        onCurrentIndexChange:(index:number)=>{
+          this.$currentIndex(index)
+        },
         tabsOption:this.tabsOption,
-        currentIndicatorIndex:this.currentIndicatorIndex!!
       })
     }
   }

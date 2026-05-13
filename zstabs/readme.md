@@ -112,13 +112,20 @@ struct Index {
 
 ## 配置项说明
 
+### 核心组件ZSTabs
+| 参数 | 类型            | 必填 | 默认值 | 说明                    |
+|------|---------------|------|--------|-----------------------|
+| currentIndicatorIndex | number        | 是 | - | tabbar的当前页索引 使用!!双向绑定 |
+| tabsOption | tabsOption    | 是 | - | tab的配置项               |
+| maskColor | ResourceColor | 否 | 20 | 按压的光感颜色               |
+
+
 ### ZSTabsOptions
 
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| tabItems | ZSTabsItem[] | 是 | - | Tab页签配置数组 |
-| maskColor | ResourceColor | 是 | - | 指示器遮罩颜色 |
-| barBottomMargin | number \| Resource | 否 | 20 | TabBar底部间距 |
+| 参数 | 类型 | 必填 | 默认值 | 说明                      |
+|------|------|------|--------|-------------------------|
+| tabItems | ZSTabsItem[] | 是 | - | Tab页签配置数组 目前支持的数组长度为2-4 |
+| barBottomMargin | number \| Resource | 否 | 20 | TabBar底部间距              |
 
 ### ZSTabsItem
 

@@ -34,7 +34,7 @@ struct Index {
   build() {
     Column(){
       ZSTabs({
-        currentIndicatorIndex:this.Index!!,
+        currentIndex:this.Index!!,
         tabsOption:{
           tabItems:[
             {

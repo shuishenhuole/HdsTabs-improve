@@ -5,7 +5,12 @@ import { ZSTabs } from 'zstabs'
 struct Index {
   build() {
     Column(){
-      ZSTabs()
+      ZSTabs({
+        tabsOption:{
+          tabItems:[],
+          maskColor:"#8d5ce7"
+        }
+      })
     }
   }
 }

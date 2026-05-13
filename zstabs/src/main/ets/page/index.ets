@@ -9,9 +9,11 @@ import {
 import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用于适配不同设备
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
+import { ZSTabsOptions } from '../common/TabsOptions';
 
 @ComponentV2
 export struct ZSTabs {
+  @Param @Require tabsOption:ZSTabsOptions
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
@@ -149,11 +151,9 @@ export struct ZSTabs {
   @Monitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
-    const timer = setTimeout(()=>{
-      this.getUIContext().animateTo({ curve: curves.springMotion(), delay: 100 }, () => {
+
+      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
         if (!this.isMoving) {
-
-
           this.animatedBarWidth = 92; // 重置为静止时的宽度
           this.animatedBarHeight = 54; // 重置为静止时的高度
           this.velocityDeformationWidth = 0; // 重置宽度形变
@@ -166,15 +166,14 @@ export struct ZSTabs {
           this.lastActiveTimestamp = 0;
           this.pauseDetected = false;
         } else {
-
-          // 移动状态：调整指示器为基础移动尺寸，准备形变
-          this.animatedBarWidth = this.BASE_MOVING_WIDTH;
-          this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
+            // 移动状态：调整指示器为基础移动尺寸，准备形变
+            this.animatedBarWidth = this.BASE_MOVING_WIDTH;
+            this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
         }
       });
-    },10)
 
-    clearTimeout(timer)
+
+    // clearTimeout(timer)
 
   }
 

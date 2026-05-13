@@ -1,9 +1,16 @@
 {
-  "name": "zstabs",
+  "name": "@shuishenhuole/zstabs",
   "version": "1.0.0",
-  "description": "Please describe the basic information.",
+  "description": "沉浸式液态指示器TabBar",
   "main": "Index.ets",
-  "author": "",
+  "author": "shuishenhuole",
   "license": "Apache-2.0",
-  "dependencies": {}
+  "keywords": [
+    "tabbar",
+    "液态指示器",
+  ],
+  "homepage": "https://github.com/shuishenhuole/HdsTabs-improve/",
+  "dependencies": {
+    "hds_button": "^1.0.1"
+  }
 }

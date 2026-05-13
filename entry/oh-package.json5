@@ -6,7 +6,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "zstabs": "file:../zstabs"
+    "@shuishenhuole/zstabs": "file:../zstabs"
   }
 }
 

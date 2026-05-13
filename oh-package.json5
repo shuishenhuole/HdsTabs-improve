@@ -2,7 +2,6 @@
   "modelVersion": "6.1.0",
   "description": "Please describe the basic information.",
   "dependencies": {
-    "hds_button": "^1.0.1"
   },
   "devDependencies": {
     "@ohos/hypium": "1.0.25",

@@ -16,6 +16,10 @@ import { ZSTabsConstance } from '../common/constant';
 @ComponentV2
 export struct ZSTabs {
   @Param @Require tabsOption: ZSTabsOptions
+  // 当前指示器吸附位置索引（0-3，对应4个页签）
+  @Param currentIndicatorIndex: number = 0
+  @Event $currentIndicatorIndex: (val: number) => void = (val: number) => {
+  }
   // 点光源照明类型，控制指示器高光效果，此处设为边框+内容同时照明
   @Local illuminatedType: hdsEffect.PointLightIlluminatedType = hdsEffect.PointLightIlluminatedType.BORDER_CONTENT;
   // 基础锚点位置（vp），对应4个页签的初始位置，基于基准容器宽度计算
@@ -53,8 +57,7 @@ export struct ZSTabs {
     return this.indicatorContainerWidth * (90 / this.BASE_CONTAINER_WIDTH);
   }
 
-  // 当前指示器吸附位置索引（0-3，对应4个页签）
-  @Local private currentIndicatorIndex: number = 0;
+
   // 拖动时的实时X轴偏移量（vp），控制指示器滑动位置
   @Local private dragOffsetX: number = 0;
   // 控制材质切换（拖动/程序移动时为true，静止时为false），绑定监听函数onIsMovingChange
@@ -134,7 +137,7 @@ export struct ZSTabs {
     // 执行指示器移动动画，时长300ms，使用弹簧曲线，确保动效流畅
     curves.springMotion()
     this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
-      this.currentIndicatorIndex = this.activeTabIndex; // 同步指示器索引
+      this.$currentIndicatorIndex(this.activeTabIndex) // 同步指示器索引
       this.displayIndex = this.activeTabIndex; // 同步显示的页签图标/文本
       this.dragOffsetX = 0; // 重置偏移量，回到锚点位置
     });
@@ -294,51 +297,51 @@ export struct ZSTabs {
     Stack({ alignContent: Alignment.Bottom }) {
       // 适配HarmonyOS 6.1及以上版本（API 60100+），使用HdsNavigation和HdsTabs构建基础导航
       if (deviceInfo.distributionOSApiVersion >= 60100) {
-          // HdsTabs组件，作为页签容器，绑定控制器和当前激活索引
-          HdsTabs({
-            controller: this.tabsController,
-            index: this.activeTabIndex  // 绑定当前激活的页签索引
-          }) {
-            ForEach(this.tabsOption.tabItems, (item: ZSTabsItem, index: number) => {
-              TabContent() {
-                item.builder.builder()
-              }
-              .tabBar(this.TabItemBuilder(
-                item.title,
-                item.icon,
-                index,
-                item.color,
-                item.selectColor??item.color
-              ))
-            })
-          }
-          // 页签切换事件监听，同步选中索引和激活索引
-          .onChange((index: number) => {
-            this.selectedTabIndex = index;
-            this.activeTabIndex = index;
-          })
-          .barHeight(59) // tabbar高度（vp）
-          .animationDuration(0) // 禁用默认动画，使用自定义液态动效
-          .scrollable(false) // 禁用tabbar自身滚动，使用自定义拖动逻辑
-          .vertical(false) // 横向排列页签
-          .barPosition(BarPosition.End) // 页签位于底部
-          .barOverlap(true) // 允许tabbar与内容重叠，实现沉浸效果
-          // 悬浮样式配置，设置tabbar的宽度、间距、颜色及沉浸材质
-          .barFloatingStyle({
-            barWidth: {
-              smallWidth: this.BASE_CONTAINER_WIDTH,
-              mediumWidth: this.BASE_CONTAINER_WIDTH,
-              largeWidth: this.BASE_CONTAINER_WIDTH
-            }, // 固定宽度，适配不同屏幕尺寸
-            adaptToHandedness: true, // 适配左右手操作习惯
-            lightColor: this.tabsOption.maskColor, // 浅色模式下的颜色
-            barBottomMargin: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin, // 底部间距，避免被系统导航栏遮挡
-            // 系统材质效果，设置为沉浸光感，精致级别，贴合HarmonyOS 6设计语言
-            systemMaterialEffect: {
-              materialType: hdsMaterial.MaterialType.IMMERSIVE,
-              materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
+        // HdsTabs组件，作为页签容器，绑定控制器和当前激活索引
+        HdsTabs({
+          controller: this.tabsController,
+          index: this.activeTabIndex  // 绑定当前激活的页签索引
+        }) {
+          ForEach(this.tabsOption.tabItems, (item: ZSTabsItem, index: number) => {
+            TabContent() {
+              item.builder.builder()
             }
+            .tabBar(this.TabItemBuilder(
+              item.title,
+              item.icon,
+              index,
+              item.color,
+              item.selectColor ?? item.color
+            ))
           })
+        }
+        // 页签切换事件监听，同步选中索引和激活索引
+        .onChange((index: number) => {
+          this.selectedTabIndex = index;
+          this.activeTabIndex = index;
+        })
+        .barHeight(59) // tabbar高度（vp）
+        .animationDuration(0) // 禁用默认动画，使用自定义液态动效
+        .scrollable(false) // 禁用tabbar自身滚动，使用自定义拖动逻辑
+        .vertical(false) // 横向排列页签
+        .barPosition(BarPosition.End) // 页签位于底部
+        .barOverlap(true) // 允许tabbar与内容重叠，实现沉浸效果
+        // 悬浮样式配置，设置tabbar的宽度、间距、颜色及沉浸材质
+        .barFloatingStyle({
+          barWidth: {
+            smallWidth: this.BASE_CONTAINER_WIDTH,
+            mediumWidth: this.BASE_CONTAINER_WIDTH,
+            largeWidth: this.BASE_CONTAINER_WIDTH
+          }, // 固定宽度，适配不同屏幕尺寸
+          adaptToHandedness: true, // 适配左右手操作习惯
+          lightColor: this.tabsOption.maskColor, // 浅色模式下的颜色
+          barBottomMargin: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin, // 底部间距，避免被系统导航栏遮挡
+          // 系统材质效果，设置为沉浸光感，精致级别，贴合HarmonyOS 6设计语言
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.IMMERSIVE,
+            materialLevel: hdsMaterial.MaterialLevel.EXQUISITE
+          }
+        })
       }
       // 液态指示器容器，用于承载指示器和拖动手势
       Column() {
@@ -364,7 +367,8 @@ export struct ZSTabs {
                   .width(30)
                   .height(30)
                   .objectFit(ImageFit.Contain)
-                  .fillColor(this.tabsOption.tabItems[0].selectColor??this.tabsOption.tabItems[0].color) // 图标颜色，与指示器形成对比度
+                  .fillColor(this.tabsOption.tabItems[0].selectColor ??
+                    this.tabsOption.tabItems[0].color) // 图标颜色，与指示器形成对比度
                   .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊，增强液态动效
                   .borderRadius(12)
                   .padding(2)
@@ -373,7 +377,8 @@ export struct ZSTabs {
                 // 页签文本，与图标同步，滑动时添加模糊效果
                 Text(this.tabTitles[this.displayIndex])
                   .fontSize(9)
-                  .fontColor(this.tabsOption.tabItems[0].selectColor??this.tabsOption.tabItems[0].color) // 文本颜色，与图标一致，确保可读性
+                  .fontColor(this.tabsOption.tabItems[0].selectColor ??
+                    this.tabsOption.tabItems[0].color) // 文本颜色，与图标一致，确保可读性
                   .fontWeight(FontWeight.Normal)
                   .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊
                   .padding(2)
@@ -458,7 +463,7 @@ export struct ZSTabs {
                 this.isMoving = true;
                 // 指示器移动到新锚点位置，动画时长300ms
                 this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
-                  this.currentIndicatorIndex = newIndex;
+                  this.$currentIndicatorIndex(newIndex)
                   this.displayIndex = newIndex;
                   this.dragOffsetX = 0; // 复位偏移量
                 });
@@ -484,7 +489,7 @@ export struct ZSTabs {
         })
         .animation({ curve: curves.springMotion() }) // 位置变化动画，确保流畅
       }
-      .margin({ bottom: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin})
+      .margin({ bottom: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin })
       .width(330) // 与tabbar宽度一致
       .height(59) // 与tabbar高度一致
       .clip(false) // 不裁剪，允许指示器溢出
@@ -514,13 +519,14 @@ export struct ZSTabs {
    * @param index 页签索引
    */
   @Builder
-  TabItemBuilder(title: string, icon: string | Resource, index: number,color:ResourceColor,selectColor:ResourceColor) {
+  TabItemBuilder(title: string, icon: string | Resource, index: number, color: ResourceColor,
+    selectColor: ResourceColor) {
     Column() {
       // 处理图标类型（字符串图标/资源图标），根据选中状态切换颜色
       if (typeof icon === 'string') {
         Text(icon)
           .fontSize(24)
-          .fontColor(index === this.selectedTabIndex?selectColor:color)
+          .fontColor(index === this.selectedTabIndex ? selectColor : color)
           .margin({ bottom: 2 })
       } else {
         Image(icon)
@@ -528,12 +534,12 @@ export struct ZSTabs {
           .height(25)
           .objectFit(ImageFit.Contain)
           .margin({ bottom: 2 })
-          .fillColor(index === this.selectedTabIndex?selectColor:color)
+          .fillColor(index === this.selectedTabIndex ? selectColor : color)
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)
         .fontSize(10)
-        .fontColor(index === this.selectedTabIndex?selectColor:color)
+        .fontColor(index === this.selectedTabIndex ? selectColor : color)
         .fontWeight(this.selectedTabIndex === index ? FontWeight.Bold : FontWeight.Regular)
     }
     .width('100%')

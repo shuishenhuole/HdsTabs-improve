@@ -306,7 +306,9 @@ export struct ZSTabs {
               .tabBar(this.TabItemBuilder(
                 item.title,
                 item.icon,
-                index
+                index,
+                item.color,
+                item.selectColor??item.color
               ))
             })
           }
@@ -362,7 +364,7 @@ export struct ZSTabs {
                   .width(30)
                   .height(30)
                   .objectFit(ImageFit.Contain)
-                  .fillColor('#ffff923e') // 图标颜色，与指示器形成对比度
+                  .fillColor(this.tabsOption.tabItems[0].selectColor??this.tabsOption.tabItems[0].color) // 图标颜色，与指示器形成对比度
                   .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊，增强液态动效
                   .borderRadius(12)
                   .padding(2)
@@ -371,7 +373,7 @@ export struct ZSTabs {
                 // 页签文本，与图标同步，滑动时添加模糊效果
                 Text(this.tabTitles[this.displayIndex])
                   .fontSize(9)
-                  .fontColor('#ffff923e') // 文本颜色，与图标一致，确保可读性
+                  .fontColor(this.tabsOption.tabItems[0].selectColor??this.tabsOption.tabItems[0].color) // 文本颜色，与图标一致，确保可读性
                   .fontWeight(FontWeight.Normal)
                   .blur((this.isMoving && !this.isNearAnchor) ? 20 : 0) // 滑动时模糊
                   .padding(2)
@@ -513,13 +515,13 @@ export struct ZSTabs {
    * @param index 页签索引
    */
   @Builder
-  TabItemBuilder(title: string, icon: string | Resource, index: number) {
+  TabItemBuilder(title: string, icon: string | Resource, index: number,color:ResourceColor,selectColor:ResourceColor) {
     Column() {
       // 处理图标类型（字符串图标/资源图标），根据选中状态切换颜色
       if (typeof icon === 'string') {
         Text(icon)
           .fontSize(24)
-          .fontColor($r('sys.color.warning'))
+          .fontColor(index === this.selectedTabIndex?selectColor:color)
           .margin({ bottom: 2 })
       } else {
         Image(icon)
@@ -527,12 +529,12 @@ export struct ZSTabs {
           .height(25)
           .objectFit(ImageFit.Contain)
           .margin({ bottom: 2 })
-          .fillColor($r('sys.color.warning'))
+          .fillColor(index === this.selectedTabIndex?selectColor:color)
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)
         .fontSize(10)
-        .fontColor($r('sys.color.warning'))
+        .fontColor(index === this.selectedTabIndex?selectColor:color)
         .fontWeight(this.selectedTabIndex === index ? FontWeight.Bold : FontWeight.Regular)
     }
     .width('100%')

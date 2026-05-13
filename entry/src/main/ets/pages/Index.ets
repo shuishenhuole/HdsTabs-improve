@@ -22,27 +22,29 @@ struct Index {
           tabItems:[
             {
               title:"首页",
-              color:$r('app.color.start_window_background'),
+              color:$r('sys.color.icon'),
+              selectColor:$r('sys.color.warning'),
               icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(myBuilder)
+              builder:wrapBuilder(myBuilder),
             },
-
             {
               title:"第一页",
-              color:$r('app.color.start_window_background'),
               icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(myBuilderT)
+              builder:wrapBuilder(myBuilderT),
+              color:$r('sys.color.icon'),
+              selectColor:$r('sys.color.warning'),
             },
             {
               title:"第二页",
-              color:$r('app.color.start_window_background'),
+              color:$r('sys.color.icon'),
+              selectColor:$r('sys.color.warning'),
               icon:$r('sys.media.ohos_ic_public_remove'),
               builder:wrapBuilder(myBuilder)
             },
-
             {
               title:"第三页",
-              color:$r('app.color.start_window_background'),
+              color:$r('sys.color.icon'),
+              selectColor:$r('sys.color.warning'),
               icon:$r('sys.media.ohos_ic_public_remove'),
               builder:wrapBuilder(myBuilder)
             },

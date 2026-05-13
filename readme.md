@@ -122,10 +122,10 @@ struct Index {
 
 ### ZSTabsOptions
 
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| tabItems | ZSTabsItem[] | 是 | - | Tab页签配置数组 |
-| barBottomMargin | number \| Resource | 否 | 20 | TabBar底部间距 |
+| 参数 | 类型 | 必填 | 默认值 | 说明                      |
+|------|------|------|--------|-------------------------|
+| tabItems | ZSTabsItem[] | 是 | - | Tab页签配置数组 目前支持的数组长度为2-4 |
+| barBottomMargin | number \| Resource | 否 | 20 | TabBar底部间距              |
 
 ### ZSTabsItem
 

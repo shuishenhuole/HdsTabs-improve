@@ -4,12 +4,12 @@
   "description": "沉浸式液态指示器TabBar",
   "main": "Index.ets",
   "author": "shuishenhuole",
-  "license": "Apache-2.0",
+  "license": "Mit",
   "keywords": [
     "tabbar",
     "液态指示器",
   ],
-  "homepage": "https://github.com/shuishenhuole/HdsTabs-improve/",
+  "homepage": "https://gitcode.com/gcw_RypLVMnR/HdsTabs-improve",
   "dependencies": {
     "hds_button": "^1.0.1"
   }

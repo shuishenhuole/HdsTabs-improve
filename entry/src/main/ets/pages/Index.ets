@@ -1,4 +1,5 @@
-import { ZSTabs } from 'zstabs'
+import { ZSTabs } from '@shuishenhuole/zstabs'
+
 @Builder
 function HomeBuilder(){
   Stack(){

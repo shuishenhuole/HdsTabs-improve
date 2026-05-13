@@ -113,11 +113,11 @@ struct Index {
 ## 配置项说明
 
 ### 核心组件ZSTabs
-| 参数 | 类型                 | 必填 | 默认值 | 说明                    |
-|------|--------------------|------|--------|-----------------------|
-| currentIndicatorIndex | number             | 是 | - | tabbar的当前页索引 使用!!双向绑定 |
-| tabsOption | ResourceColor      | 是 | - | tab的配置项               |
-| maskColor | number \| Resource | 否 | 20 | 按压的光感颜色               |
+| 参数 | 类型            | 必填 | 默认值 | 说明                    |
+|------|---------------|------|--------|-----------------------|
+| currentIndicatorIndex | number        | 是 | - | tabbar的当前页索引 使用!!双向绑定 |
+| tabsOption | tabsOption    | 是 | - | tab的配置项               |
+| maskColor | ResourceColor | 否 | 20 | 按压的光感颜色               |
 
 
 ### ZSTabsOptions

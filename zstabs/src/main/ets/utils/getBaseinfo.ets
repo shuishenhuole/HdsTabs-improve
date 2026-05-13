@@ -8,7 +8,7 @@ export function getBasePositions(len:number):number[]{
     return [45,106]
   }
   else if(len === 3){
-    return [8.5,122,241]
+    return [29,105,183]
   }
   else if(len === 4){
     return [8.5,85,162.5,241]
@@ -27,7 +27,7 @@ export function getBaseContainerWidth(len:number):number{
     return 200
   }
   else if(len === 3){
-    return 330
+    return 280
   }
   else if(len === 4){
     return 330

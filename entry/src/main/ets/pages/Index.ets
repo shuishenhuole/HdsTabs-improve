@@ -27,13 +27,13 @@ struct Index {
               icon:$r('sys.media.ohos_ic_public_remove'),
               builder:wrapBuilder(myBuilder),
             },
-            {
-              title:"第一页",
-              icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(myBuilderT),
-              color:$r('sys.color.icon'),
-              selectColor:$r('sys.color.warning'),
-            },
+            // {
+            //   title:"第一页",
+            //   icon:$r('sys.media.ohos_ic_public_remove'),
+            //   builder:wrapBuilder(myBuilderT),
+            //   color:$r('sys.color.icon'),
+            //   selectColor:$r('sys.color.warning'),
+            // },
             {
               title:"第二页",
               color:$r('sys.color.icon'),

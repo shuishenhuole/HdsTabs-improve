@@ -9,7 +9,7 @@ import {
 import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用于适配不同设备
 import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
-import { ZSTabsOptions } from '../common/TabsOptions';
+import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
 
 @ComponentV2
 export struct ZSTabs {
@@ -108,11 +108,9 @@ export struct ZSTabs {
   // 选中的tab索引，用于控制页签图标/文本的样式切换（填充/镂空、颜色变化）
   @Local selectedTabIndex: number = 0;
   // 页签标题数组，对应4个页签的文本
-  private tabTitles: string[] = ['首页', '二页', '三页', '四页'];
+  private tabTitles: string[] = this.tabsOption.tabItems.map((item:ZSTabsItem)=>item.title)
   // 页签图标数组，对应4个页签的图标资源
-  private tabIcons: Resource[] =
-    [$r('sys.media.clone_app_badge_1'), $r('sys.media.ohos_ic_public_edit'), $r('sys.media.ohos_ic_public_share'),
-      $r('sys.media.ohos_ic_public_remove')];
+  private tabIcons: Resource[] = this.tabsOption.tabItems.map((item:ZSTabsItem)=> item.icon)
 
   /**
    * 激活页签变化监听函数
@@ -305,29 +303,40 @@ export struct ZSTabs {
             controller: this.tabsController,
             index: this.activeTabIndex  // 绑定当前激活的页签索引
           }) {
-            // 第1个页签内容（可根据实际需求填充页面内容）
-            TabContent() {
+            ForEach(this.tabsOption.tabItems,(item:ZSTabsItem,index:number)=>{
+              TabContent(){
+                item.builder.builder()
+              }
+              .tabBar(this.TabItemBuilder(
+                item.title,
+                item.icon,
+                index
+              ))
+            })
 
-            }
-            .tabBar(this.TabItemBuilder('首页', $r('sys.media.ohos_ic_public_remove'), 0)) // 绑定页签样式构建器
-
-            // 第2个页签内容
-            TabContent() {
-
-            }
-            .tabBar(this.TabItemBuilder('二页', $r('sys.media.ohos_ic_public_share'), 1))
-
-            // 第3个页签内容
-            TabContent() {
-
-            }
-            .tabBar(this.TabItemBuilder('三页', $r('sys.media.ohos_ic_public_edit'), 2))
-
-            // 第4个页签内容
-            TabContent() {
-
-            }
-            .tabBar(this.TabItemBuilder('四页', $r('sys.media.clone_app_badge_1'), 3))
+            // // 第1个页签内容（可根据实际需求填充页面内容）
+            // TabContent() {
+            //
+            // }
+            // .tabBar(this.TabItemBuilder('首页', $r('sys.media.ohos_ic_public_remove'), 0)) // 绑定页签样式构建器
+            //
+            // // 第2个页签内容
+            // TabContent() {
+            //
+            // }
+            // .tabBar(this.TabItemBuilder('二页', $r('sys.media.ohos_ic_public_share'), 1))
+            //
+            // // 第3个页签内容
+            // TabContent() {
+            //
+            // }
+            // .tabBar(this.TabItemBuilder('三页', $r('sys.media.ohos_ic_public_edit'), 2))
+            //
+            // // 第4个页签内容
+            // TabContent() {
+            //
+            // }
+            // .tabBar(this.TabItemBuilder('四页', $r('sys.media.clone_app_badge_1'), 3))
 
           }
           // 页签切换事件监听，同步选中索引和激活索引

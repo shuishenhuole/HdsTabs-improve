@@ -1,6 +1,6 @@
 export interface ZSTabsItem{
   title:string,
-  icon:string,
+  icon:Resource,
   color:ResourceColor,
   selectColor?:ResourceColor,
   builder:WrappedBuilder<[]>

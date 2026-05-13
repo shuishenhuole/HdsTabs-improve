@@ -139,8 +139,11 @@ struct Index {
 | builder | WrappedBuilder<[]> | 是 | - | 页签内容构建器 |
 
 ### 兼容性
-在api23及以上可用如果低于版本会只用默认tabs
-如果需要对tabs实现一次开发多端部署可以在
+液态效果仅在api23及以上可用
+
+如果低于版本会只用默认tabs
+如果需要对tabs实现一次开发多端部署(小屏幕在低下显示在底部，在大屏幕显示在左侧边)
+可以在EntryAbility.ets加入
 
 EntryAbility.ets
 ```typescript
@@ -148,8 +151,8 @@ onWindowStageCreate(windowStage: window.WindowStage): void {
   ...
   ZSBreakPoint.init(windowStage)
   ...
-    });
-  }
+});
+}
 ```
 ## 致谢
 

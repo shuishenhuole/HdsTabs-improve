@@ -1,3 +1,8 @@
+/**
+ * 获取锚点位置
+ * @param len tabContent的数量
+ * @returns 锚点位置
+ */
 export function getBasePositions(len:number):number[]{
   if(len == 2){
     return [45,106]
@@ -13,6 +18,10 @@ export function getBasePositions(len:number):number[]{
   }
 }
 
+/**
+ * @param len tabContent的数量
+ * @returns容器宽度
+ */
 export function getBaseContainerWidth(len:number):number{
   if(len == 2){
     return 200

@@ -26,6 +26,75 @@
 - 更好的UI上下文管理
 
 
+## 安装
+
+```bash
+ohpm install @shuishenhuole/zstabs
+```
+
+## 使用示例
+
+```typescript
+import { ZSTabs } from 'zstabs'
+
+@Builder
+function myBuilder() {
+  Stack() {
+    Text("Hello world")
+  }
+}
+
+@Entry
+@ComponentV2
+struct Index {
+  build() {
+    Column() {
+      ZSTabs({
+        tabsOption: {
+          tabItems: [
+            {
+              title: "首页",
+              color: $r('sys.color.icon'),
+              selectColor: $r('sys.color.warning'),
+              icon: $r('sys.media.ohos_ic_public_remove'),
+              builder: wrapBuilder(myBuilder)
+            },
+            {
+              title: "发现",
+              color: $r('sys.color.icon'),
+              selectColor: $r('sys.color.warning'),
+              icon: $r('sys.media.ohos_ic_public_share'),
+              builder: wrapBuilder(myBuilder)
+            }
+          ],
+          maskColor: "#8d5ce7"
+        }
+      })
+    }
+  }
+}
+```
+
+## 配置项说明
+
+### ZSTabsOptions
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| tabItems | ZSTabsItem[] | 是 | - | Tab页签配置数组 |
+| maskColor | ResourceColor | 是 | - | 指示器遮罩颜色 |
+| barBottomMargin | number \| Resource | 否 | 20 | TabBar底部间距 |
+
+### ZSTabsItem
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| title | string | 是 | - | 页签标题文本 |
+| icon | Resource | 是 | - | 页签图标资源 |
+| color | ResourceColor | 是 | - | 页签未选中时的颜色 |
+| selectColor | ResourceColor | 否 | - | 页签选中时的颜色 |
+| builder | WrappedBuilder<[]> | 是 | - | 页签内容构建器 |
+
 ## 致谢
 
 本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。

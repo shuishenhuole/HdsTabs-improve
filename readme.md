@@ -20,17 +20,6 @@
 - `@Monitor` 替代 `@Watch` 监听器
 - 符合HarmonyOS最新规范
 
-### 📦 常量化管理
-- 所有配置参数集中管理在 `constant.ets`
-- 6个常量类分类管理：
-  - `TabConstants`: TabBar基础配置
-  - `IndicatorConstants`: 指示器尺寸参数
-  - `VelocityConstants`: 速度与形变参数
-  - `AnimationConstants`: 动画时长配置
-  - `ColorConstants`: 颜色配置
-  - `TabConfig`: 页签标题和图标
-- 便于修改和维护
-
 ### ⚡ 最新API适配
 - 使用 `getUIContext().animateTo()` 替代全局 `animateTo()`
 - 符合HarmonyOS API最新规范
@@ -40,4 +29,5 @@
 ## 致谢
 
 本项目基于 [对沉浸光感tabbar的优化改造](https://developer.huawei.com/consumer/cn/blog/topic/03212848303315412) 进行重构和优化。
+
 核心光感来自[hds_button](https://ohpm.openharmony.cn/#/cn/detail/hds_button) 感谢开源

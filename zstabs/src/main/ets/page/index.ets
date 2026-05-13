@@ -118,7 +118,7 @@ export struct ZSTabs {
    * 激活页签变化监听函数
    * 当页签通过点击切换时，同步移动指示器至对应位置，触发液态动效
    */
-  @Monitor("activeTabIndex")
+  @SyncMonitor("activeTabIndex")
   private onActiveTabChange(): void {
     // 若为程序控制移动，直接返回，避免重复处理
     if (this.isProgrammaticChange) {
@@ -148,7 +148,7 @@ export struct ZSTabs {
    * 移动状态变化监听函数
    * 当isMoving状态改变时，调整指示器的尺寸、形变及模糊效果，实现液态静止/流动切换
    */
-  @Monitor("isMoving")
+  @SyncMonitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
@@ -385,7 +385,6 @@ export struct ZSTabs {
               .width('100%')
               .height('100%')
               .borderRadius(30) // 圆角，贴合液态指示器的圆润风格
-
             }
 
             // 半透明遮罩，用于增强指示器的层次感，静止时显示，移动时透明

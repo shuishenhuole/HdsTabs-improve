@@ -12,8 +12,6 @@ export struct DTabs {
   build() {
     Tabs({
       barPosition: new WidthBreakPoint<BarPosition>({
-        sm: BarPosition.End,
-        md: BarPosition.End,
         lg: BarPosition.Start,
         xl: BarPosition.Start,
         default:BarPosition.End
@@ -36,6 +34,11 @@ export struct DTabs {
         ))
       })
     }
+    .vertical(new WidthBreakPoint<boolean>({
+      lg:true,
+      xl:true,
+      default:false
+    }).getValue())
     .onChange((val:number)=>{
       this.onCurrentIndexChange(val)
     })

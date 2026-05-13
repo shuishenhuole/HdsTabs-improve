@@ -329,7 +329,7 @@ export struct ZSTabs {
               largeWidth: this.BASE_CONTAINER_WIDTH
             }, // 固定宽度，适配不同屏幕尺寸
             adaptToHandedness: true, // 适配左右手操作习惯
-            lightColor: '#ff00eaff', // 浅色模式下的颜色
+            lightColor: this.tabsOption.maskColor, // 浅色模式下的颜色
             barBottomMargin: this.tabsOption.barBottomMargin ?? ZSTabsConstance.barBottomMargin, // 底部间距，避免被系统导航栏遮挡
             // 系统材质效果，设置为沉浸光感，精致级别，贴合HarmonyOS 6设计语言
             systemMaterialEffect: {

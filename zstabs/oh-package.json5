@@ -1,6 +1,6 @@
 {
   "name": "@shuishenhuole/zstabs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "沉浸式液态指示器TabBar",
   "main": "Index.ets",
   "author": "shuishenhuole",

@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_tabs_O-oc3eBguMr4xAkqzux7v-zMRp2UdvTYcO-902llNNo=.cer",
+          "certpath": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_HdsTabs-improve_16_GXQdv4FRGjHa5M4Co58RjzBbTEcLfeJnNLFNoKA4=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BA9ACB2491E75D2FFF4D6AA0275A58B2A9CE1E8A018832E39F988110C9C81EAD5B7AA9841D6C8C1",
-          "profile": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_tabs_O-oc3eBguMr4xAkqzux7v-zMRp2UdvTYcO-902llNNo=.p7b",
+          "keyPassword": "0000001AC10BA2DF869715C9597D3AD7DF4813DB924666C54684C60821361BFE4D150A84E9DAE6F9FC61",
+          "profile": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_HdsTabs-improve_16_GXQdv4FRGjHa5M4Co58RjzBbTEcLfeJnNLFNoKA4=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_tabs_O-oc3eBguMr4xAkqzux7v-zMRp2UdvTYcO-902llNNo=.p12",
-          "storePassword": "0000001B5A35E2B5072D6E9FC6FE332E646B2340176059EC7CDAF9314CFFF8F6E88032E8B7AE3AAC79DA4C"
+          "storeFile": "C:\\Users\\shuishenhuole\\.ohos\\config\\default_HdsTabs-improve_16_GXQdv4FRGjHa5M4Co58RjzBbTEcLfeJnNLFNoKA4=.p12",
+          "storePassword": "0000001A62A79C3DD6F0EB7038486CBDE546F81DF8D5BC25E86E6C4AB9A2B9DA91246B2468E6B3604E3B"
         }
       }
     ],
@@ -20,7 +20,7 @@
         "name": "default",
         "signingConfig": "default",
         "targetSdkVersion": "6.1.0(23)",
-        "compatibleSdkVersion": "6.1.0(23)",
+        "compatibleSdkVersion": "5.0.2(14)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {

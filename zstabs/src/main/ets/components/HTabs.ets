@@ -4,12 +4,11 @@ import {
   hdsMaterial,
   HdsTabsController
 } from '@kit.UIDesignKit';
-import { deviceInfo } from '@kit.BasicServicesKit'; // 设备信息工具，用于适配不同设备
-import { HdsMiniBarButton } from 'hds_button'; // 液态指示器核心按钮组件
 import { curves } from '@kit.ArkUI';
 import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
 import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
 import { ZSTabsConstance } from '../common/constant';
+import { HdsMiniBarButton } from './HdsMiniBarButton';
 
 @ComponentV2
 export struct HTabs {

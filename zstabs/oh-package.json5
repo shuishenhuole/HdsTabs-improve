@@ -11,7 +11,6 @@
   ],
   "homepage": "https://gitcode.com/gcw_RypLVMnR/HdsTabs-improve",
   "dependencies": {
-    "hds_button": "^1.0.1",
     "@shuishenhuole/breakpoint": "^1.2.1"
   },
   "devDependencies": {},

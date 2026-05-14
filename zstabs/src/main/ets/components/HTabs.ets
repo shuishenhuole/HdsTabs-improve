@@ -23,12 +23,8 @@ import {
   INDICATOR_CONTAINER_WIDTH,
   TAB_BAR_HEIGHT
 } from './HTabsConstants';
-import {
-  calcAnchorPositions,
-  calcSlotWidth,
-  calcVelocityDeformation,
-  findNearestAnchor
-} from './HTabsUtils';
+import { calcAnchorPositions, calcSlotWidth } from './HTabsUtils';
+import { HTabsIndicator } from './HTabsIndicator';
 
 @ComponentV2
 export struct HTabs {
@@ -36,28 +32,14 @@ export struct HTabs {
   @Param currentIndex: number = 0
   @Event onCurrentIndexChange: (val: number) => void = (val: number) => {
   }
+
   private readonly BASE_POSITIONS: number[] = getBasePositions(this.tabsOption.tabItems.length)
   private readonly BASE_CONTAINER_WIDTH: number = getBaseContainerWidth(this.tabsOption.tabItems.length)
   @Local private indicatorContainerWidth: number = getBaseContainerWidth(this.tabsOption.tabItems.length)
 
-  @Local private dragOffsetX: number = 0;
-  @Local private isMoving: boolean = false;
-  @Local private animatedBarWidth: number = BAR_RESTING_WIDTH;
-  @Local private animatedBarHeight: number = BAR_RESTING_HEIGHT;
-  @Local private isProgrammaticChange: boolean = false;
-  @Local private lastOffsetX: number = 0;
-  @Local private currentVelocity: number = 0;
-  @Local private velocityDeformationWidth: number = 0;
-  @Local private velocityDeformationHeight: number = 0;
-  @Local private smoothedVelocity: number = 0;
-  private initialDragDirection: number = 0;
-  private lastActiveTimestamp: number = 0;
-  private pauseDetected: boolean = false;
-  @Local private isNearAnchor: boolean = false;
-  @Local private displayIndex: number = 0;
+  private indicator: HTabsIndicator = new HTabsIndicator();
   private tabsController: HdsTabsController = new HdsTabsController();
   @Local private activeTabIndex: number = 0;
-  @Local currentTabIndex: number = 0;
   @Local selectedTabIndex: number = 0;
   private tabTitles: string[] = this.tabsOption.tabItems.map((item: ZSTabsItem) => item.title)
   private tabIcons: Resource[] = this.tabsOption.tabItems.map((item: ZSTabsItem) => item.icon)
@@ -74,79 +56,32 @@ export struct HTabs {
     return calcSlotWidth(this.indicatorContainerWidth, this.BASE_CONTAINER_WIDTH);
   }
 
-  private resetDeformationState(): void {
-    this.velocityDeformationWidth = 0;
-    this.velocityDeformationHeight = 0;
-    this.currentVelocity = 0;
-    this.smoothedVelocity = 0;
-    this.initialDragDirection = 0;
-    this.lastActiveTimestamp = 0;
-    this.pauseDetected = false;
-  }
-
-  /**
-   * 激活页签变化监听函数
-   */
   @Monitor("activeTabIndex")
   private onActiveTabChange(): void {
-    if (this.isProgrammaticChange) {
+    if (this.indicator.isProgrammaticChange) {
       return;
     }
     if (this.activeTabIndex === this.currentIndex) {
       return;
     }
 
-    this.isMoving = true;
+    this.indicator.enterMoving(this.activeTabIndex);
     this.getUIContext().animateTo({ duration: ANIM_DURATION_SWITCH, curve: curves.springMotion() }, () => {
-      this.animatedBarWidth = BAR_MOVING_WIDTH;
-      this.animatedBarHeight = BAR_MOVING_HEIGHT;
+      this.indicator.animatedBarWidth = BAR_MOVING_WIDTH;
+      this.indicator.animatedBarHeight = BAR_MOVING_HEIGHT;
       this.onCurrentIndexChange(this.activeTabIndex)
-      this.displayIndex = this.activeTabIndex;
-      this.dragOffsetX = 0;
+      this.indicator.displayIndex = this.activeTabIndex;
+      this.indicator.dragOffsetX = 0;
     });
     setTimeout(() => {
-      this.isMoving = false;
+      this.indicator.enterResting(this.activeTabIndex);
       this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-        this.animatedBarWidth = BAR_RESTING_WIDTH;
-        this.animatedBarHeight = BAR_RESTING_HEIGHT;
-        this.resetDeformationState();
-        this.displayIndex = this.activeTabIndex;
+        this.indicator.animatedBarWidth = BAR_RESTING_WIDTH;
+        this.indicator.animatedBarHeight = BAR_RESTING_HEIGHT;
+        this.indicator.resetDeformation();
+        this.indicator.displayIndex = this.activeTabIndex;
       });
     }, ANIM_DURATION_SWITCH + 10);
-  }
-
-  private applyVelocityDeformation(velocity: number): void {
-    const result = calcVelocityDeformation(
-      velocity,
-      this.smoothedVelocity,
-      this.initialDragDirection,
-      this.lastActiveTimestamp,
-      this.pauseDetected
-    );
-    this.currentVelocity = velocity;
-    this.smoothedVelocity = result.smoothedVelocity;
-    this.initialDragDirection = result.initialDragDirection;
-    this.lastActiveTimestamp = result.lastActiveTimestamp;
-    this.pauseDetected = result.pauseDetected;
-    this.velocityDeformationWidth = result.velocityDeformationWidth;
-    this.velocityDeformationHeight = result.velocityDeformationHeight;
-    this.animatedBarWidth = result.animatedBarWidth;
-    this.animatedBarHeight = result.animatedBarHeight;
-  }
-
-  private checkNearAnchor(): void {
-    const currentX = this.getAnchorPosition() + this.dragOffsetX;
-    const positions = this.getAnchorPositions();
-    const result = findNearestAnchor(currentX, positions);
-    const wasNearAnchor = this.isNearAnchor;
-
-    this.isNearAnchor = result.isNearAnchor;
-    this.displayIndex = result.nearestIndex;
-
-    if (wasNearAnchor !== this.isNearAnchor && !this.isMoving) {
-      this.getUIContext().animateTo({ duration: ANIM_DURATION_NEAR_ANCHOR, curve: Curve.EaseInOut }, () => {
-      });
-    }
   }
 
   aboutToAppear() {
@@ -204,41 +139,41 @@ export struct HTabs {
           Stack() {
             HdsMiniBarButton({
               maskColor: '#00ffffff',
-              barWidth: this.animatedBarWidth,
-              barHeight: this.animatedBarHeight,
+              barWidth: this.indicator.animatedBarWidth,
+              barHeight: this.indicator.animatedBarHeight,
               materialType: hdsMaterial.MaterialType.IMMERSIVE,
               materialLevel: hdsMaterial.MaterialLevel.EXQUISITE,
             }) {
               Column({ space: 0 }) {
-                if (this.tabIcons[this.displayIndex].type === resourceType.symbol) {
-                  SymbolGlyph(this.tabIcons[this.displayIndex])
+                if (this.tabIcons[this.indicator.displayIndex].type === resourceType.symbol) {
+                  SymbolGlyph(this.tabIcons[this.indicator.displayIndex])
                     .fontSize(30)
                     .fontColor([this.tabsOption.tabItems[0].selectColor ??
                       this.tabsOption.tabItems[0].color])
-                    .blur((this.isMoving && !this.isNearAnchor) ? BLUR_AMOUNT : 0)
+                    .blur((this.indicator.isMoving && !this.indicator.isNearAnchor) ? BLUR_AMOUNT : 0)
                     .borderRadius(12)
                     .padding(2)
                     .animation({ duration: ANIM_DURATION_ICON, curve: Curve.Smooth })
 
-                } else if (this.tabIcons[this.displayIndex].type === resourceType.image) {
-                  Image(this.tabIcons[this.displayIndex])
+                } else if (this.tabIcons[this.indicator.displayIndex].type === resourceType.image) {
+                  Image(this.tabIcons[this.indicator.displayIndex])
                     .width(30)
                     .height(30)
                     .objectFit(ImageFit.Contain)
                     .fillColor(this.tabsOption.tabItems[0].selectColor ??
                       this.tabsOption.tabItems[0].color)
-                    .blur((this.isMoving && !this.isNearAnchor) ? BLUR_AMOUNT : 0)
+                    .blur((this.indicator.isMoving && !this.indicator.isNearAnchor) ? BLUR_AMOUNT : 0)
                     .borderRadius(12)
                     .padding(2)
                     .animation({ duration: ANIM_DURATION_ICON, curve: Curve.Smooth })
                 }
 
-                Text(this.tabTitles[this.displayIndex])
+                Text(this.tabTitles[this.indicator.displayIndex])
                   .fontSize(9)
                   .fontColor(this.tabsOption.tabItems[0].selectColor ??
                     this.tabsOption.tabItems[0].color)
                   .fontWeight(FontWeight.Normal)
-                  .blur((this.isMoving && !this.isNearAnchor) ? BLUR_AMOUNT : 0)
+                  .blur((this.indicator.isMoving && !this.indicator.isNearAnchor) ? BLUR_AMOUNT : 0)
                   .padding(2)
                   .borderRadius(15)
                   .animation({ curve: curves.springMotion() })
@@ -265,76 +200,74 @@ export struct HTabs {
         }
         .borderRadius(BAR_BORDER_RADIUS)
         .clip(false)
-        .translate({ x: this.dragOffsetX })
+        .translate({ x: this.indicator.dragOffsetX })
         .gesture(
           PanGesture({ direction: PanDirection.Horizontal })
             .onActionStart(() => {
-              this.isMoving = true;
-              this.lastOffsetX = 0;
-              this.currentVelocity = 0;
-              this.smoothedVelocity = 0;
-              this.displayIndex = this.currentIndex;
-              this.initialDragDirection = 0;
-              this.lastActiveTimestamp = 0;
-              this.pauseDetected = false;
+              this.indicator.enterMoving(this.currentIndex);
               this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-                this.animatedBarWidth = BAR_MOVING_WIDTH;
-                this.animatedBarHeight = BAR_MOVING_HEIGHT;
+                this.indicator.animatedBarWidth = BAR_MOVING_WIDTH;
+                this.indicator.animatedBarHeight = BAR_MOVING_HEIGHT;
               });
             })
             .onActionUpdate((event: GestureEvent) => {
-              const velocity = event.offsetX - this.lastOffsetX;
-              this.lastOffsetX = event.offsetX;
+              const velocity = event.offsetX - this.indicator.lastOffsetX;
+              this.indicator.lastOffsetX = event.offsetX;
 
-              if (this.isMoving) {
-                this.applyVelocityDeformation(velocity);
+              if (this.indicator.isMoving) {
+                this.indicator.updateVelocityDeformation(velocity);
               }
 
               if (this.currentIndex === 0 && event.offsetX < 0) {
-                this.dragOffsetX = event.offsetX * EDGE_DRAG_DAMPING;
+                this.indicator.dragOffsetX = event.offsetX * EDGE_DRAG_DAMPING;
               } else if (this.currentIndex === 3 && event.offsetX > 0) {
-                this.dragOffsetX = event.offsetX * EDGE_DRAG_DAMPING;
+                this.indicator.dragOffsetX = event.offsetX * EDGE_DRAG_DAMPING;
               } else {
-                this.dragOffsetX = event.offsetX;
+                this.indicator.dragOffsetX = event.offsetX;
               }
-              if (this.isMoving) {
-                this.checkNearAnchor();
+
+              if (this.indicator.isMoving) {
+                const currentX = this.getAnchorPosition() + this.indicator.dragOffsetX;
+                const changed = this.indicator.checkNearAnchor(currentX, this.getAnchorPositions());
+                if (changed && !this.indicator.isMoving) {
+                  this.getUIContext().animateTo({ duration: ANIM_DURATION_NEAR_ANCHOR, curve: Curve.EaseInOut }, () => {
+                  });
+                }
               }
             })
             .onActionEnd(() => {
               const slotWidth = this.getSlotWidth();
-              const movedSlots = Math.round(this.dragOffsetX / slotWidth);
+              const movedSlots = Math.round(this.indicator.dragOffsetX / slotWidth);
               let newIndex = this.currentIndex + movedSlots;
               newIndex = Math.max(0, Math.min(3, newIndex));
 
               if (newIndex !== this.currentIndex) {
-                this.isProgrammaticChange = true;
-                this.isMoving = true;
+                this.indicator.isProgrammaticChange = true;
+                this.indicator.isMoving = true;
                 this.getUIContext().animateTo({ duration: ANIM_DURATION_SWITCH, curve: curves.springMotion() }, () => {
                   this.onCurrentIndexChange(newIndex)
-                  this.displayIndex = newIndex;
-                  this.dragOffsetX = 0;
+                  this.indicator.displayIndex = newIndex;
+                  this.indicator.dragOffsetX = 0;
                 });
                 setTimeout(() => {
-                  this.isMoving = false;
-                  this.isProgrammaticChange = false;
+                  this.indicator.enterResting(newIndex);
                   this.tabsController.changeIndex(newIndex);
                   this.selectedTabIndex = newIndex;
                   this.activeTabIndex = newIndex;
                   this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-                    this.animatedBarWidth = BAR_RESTING_WIDTH;
-                    this.animatedBarHeight = BAR_RESTING_HEIGHT;
-                    this.resetDeformationState();
-                    this.displayIndex = newIndex;
+                    this.indicator.animatedBarWidth = BAR_RESTING_WIDTH;
+                    this.indicator.animatedBarHeight = BAR_RESTING_HEIGHT;
+                    this.indicator.resetDeformation();
+                    this.indicator.displayIndex = newIndex;
                   });
                 }, ANIM_DURATION_SWITCH + 10);
               } else {
-                this.isMoving = false;
+                this.indicator.isMoving = false;
                 this.getUIContext().animateTo({ duration: ANIM_DURATION_RESET, curve: curves.springMotion() }, () => {
-                  this.animatedBarWidth = BAR_RESTING_WIDTH;
-                  this.animatedBarHeight = BAR_RESTING_HEIGHT;
-                  this.resetDeformationState();
-                  this.dragOffsetX = 0;
+                  this.indicator.animatedBarWidth = BAR_RESTING_WIDTH;
+                  this.indicator.animatedBarHeight = BAR_RESTING_HEIGHT;
+                  this.indicator.resetDeformation();
+                  this.indicator.dragOffsetX = 0;
                 });
               }
             })

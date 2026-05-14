@@ -24,7 +24,7 @@ import {
   TAB_BAR_HEIGHT
 } from '../constant/HTabsConstants';
 import { calcAnchorPositions, calcSlotWidth } from '../utils/HTabsUtils';
-import { HTabsIndicator } from './HTabsIndicator';
+import { HTabsIndicator } from '../utils/HTabsIndicator';
 
 @ComponentV2
 export struct HTabs {

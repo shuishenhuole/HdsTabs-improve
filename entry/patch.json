@@ -1,7 +1,7 @@
 {
   "app": {
     "bundleName": "com.shuishenhuole.tabs",
-    "patchVersionCode": 2000317,
+    "patchVersionCode": 2000319,
     "versionCode": 1000000
   },
   "module": {

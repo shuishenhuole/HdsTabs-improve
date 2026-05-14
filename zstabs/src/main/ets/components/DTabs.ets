@@ -1,5 +1,6 @@
 import { WidthBreakPoint } from "@shuishenhuole/breakpoint"
 import { ZSTabsItem, ZSTabsOptions } from "../common/TabsOptions"
+import { resourceType } from "../utils/tabtype"
 
 @ComponentV2
 export struct DTabs {
@@ -62,12 +63,18 @@ export struct DTabs {
           .fontColor(index === this.currentIndex ? selectColor : color)
           .margin({ bottom: 2 })
       } else {
-        Image(icon)
-          .width(25)
-          .height(25)
-          .objectFit(ImageFit.Contain)
-          .margin({ bottom: 2 })
-          .fillColor(index === this.currentIndex ? selectColor : color)
+        if (icon.type === resourceType.symbol) {
+          SymbolGlyph(icon)
+            .fontSize(25)
+            .fontColor([index === this.currentIndex ? selectColor : color])
+        } else if (icon.type === resourceType.image) {
+          Image(icon)
+            .width(25)
+            .height(25)
+            .objectFit(ImageFit.Contain)
+            .margin({ bottom: 2 })
+            .fillColor(index === this.currentIndex ? selectColor : color)
+        }
       }
       // 页签文本，根据选中状态切换颜色和字体粗细
       Text(title)

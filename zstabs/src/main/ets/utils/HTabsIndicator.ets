@@ -79,7 +79,8 @@ export class HTabsIndicator {
 
   /**
    * 进入静止状态
-   * 重置形变和偏移量，恢复静止态尺寸
+   * 重置形变，恢复静止态尺寸
+   * 注意：不重置 dragOffsetX，由调用方在合适的时机（如 animateTo 回调中）控制
    * @param displayIndex 最终显示的页签索引
    */
   enterResting(displayIndex: number): void {
@@ -88,7 +89,6 @@ export class HTabsIndicator {
     this.animatedBarWidth = BAR_RESTING_WIDTH;
     this.animatedBarHeight = BAR_RESTING_HEIGHT;
     this.resetDeformation();
-    this.dragOffsetX = 0;
   }
 
   /**

@@ -323,10 +323,20 @@ export struct HTabs {
                   this.indicator.dragOffsetX = 0;
                 });
                 setTimeout(() => {
+                  // 用户在动画期间点击了其他页签（activeTabIndex 已被 onChange 改掉），跳过重置
+                  if (this.activeTabIndex !== newIndex) {
+                    this.indicator.isProgrammaticChange = false;
+                    return;
+                  }
                   this.indicator.enterResting(newIndex);
                   this.tabsController.changeIndex(newIndex);
                   this.selectedTabIndex = newIndex;
                   this.activeTabIndex = newIndex;
+                  // 延迟到下一帧重置标记，确保 Monitor 在本帧处理 activeTabIndex 变化时
+                  // isProgrammaticChange 仍为 true 从而跳过，避免手势和点击互相干扰
+                  setTimeout(() => {
+                    this.indicator.isProgrammaticChange = false;
+                  }, 0);
                   this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
                     this.indicator.animatedBarWidth = BAR_RESTING_WIDTH;
                     this.indicator.animatedBarHeight = BAR_RESTING_HEIGHT;

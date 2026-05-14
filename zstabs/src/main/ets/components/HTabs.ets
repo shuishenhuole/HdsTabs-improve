@@ -55,7 +55,7 @@ export struct HTabs {
 
   // 拖动时的实时X轴偏移量（vp），控制指示器滑动位置
   @Local private dragOffsetX: number = 0;
-  // 控制材质切换（拖动/程序移动时为true，静止时为false），绑定监听函数onIsMovingChange
+  // 控制材质切换（拖动/程序移动时为true，静止时为false）
   @Local private isMoving: boolean = false;
   // 指示器动态宽度（vp），随滑动状态变化，实现液态拉伸/收缩效果
   @Local private animatedBarWidth: number = 92;
@@ -132,6 +132,8 @@ export struct HTabs {
     // 执行指示器移动动画，时长300ms，使用弹簧曲线，确保动效流畅
     curves.springMotion()
     this.getUIContext().animateTo({ duration: 300, curve: curves.springMotion() }, () => {
+      this.animatedBarWidth = this.BASE_MOVING_WIDTH;
+      this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
       this.onCurrentIndexChange(this.activeTabIndex) // 同步指示器索引
       this.displayIndex = this.activeTabIndex; // 同步显示的页签图标/文本
       this.dragOffsetX = 0; // 重置偏移量，回到锚点位置
@@ -139,35 +141,19 @@ export struct HTabs {
     // 动画结束后，重置移动状态（延迟310ms，确保动画完全执行）
     setTimeout(() => {
       this.isMoving = false;
-    }, 310);
-  }
-
-  /**
-   * 移动状态变化监听函数
-   * 当isMoving状态改变时，调整指示器的尺寸、形变及模糊效果，实现液态静止/流动切换
-   */
-  @Monitor("isMoving")
-  private onIsMovingChange(): void {
-    // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
-    this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
-      if (!this.isMoving) {
-        this.animatedBarWidth = 92; // 重置为静止时的宽度
-        this.animatedBarHeight = 54; // 重置为静止时的高度
-        this.velocityDeformationWidth = 0; // 重置宽度形变
-        this.velocityDeformationHeight = 0; // 重置高度形变
-        this.currentVelocity = 0; // 重置速度
-        this.smoothedVelocity = 0; // 重置平滑速度
-        this.displayIndex = this.currentIndex; // 同步显示当前选中页签
-        // 重置拖动相关参数，为下一次拖动做准备
+      this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+        this.animatedBarWidth = 92;
+        this.animatedBarHeight = 54;
+        this.velocityDeformationWidth = 0;
+        this.velocityDeformationHeight = 0;
+        this.currentVelocity = 0;
+        this.smoothedVelocity = 0;
+        this.displayIndex = this.activeTabIndex;
         this.initialDragDirection = 0;
         this.lastActiveTimestamp = 0;
         this.pauseDetected = false;
-      } else {
-        // 移动状态：调整指示器为基础移动尺寸，准备形变
-        this.animatedBarWidth = this.BASE_MOVING_WIDTH;
-        this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
-      }
-    });
+      });
+    }, 310);
   }
 
   /**
@@ -428,6 +414,10 @@ export struct HTabs {
               this.initialDragDirection = 0;
               this.lastActiveTimestamp = 0;
               this.pauseDetected = false;
+              this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+                this.animatedBarWidth = this.BASE_MOVING_WIDTH;
+                this.animatedBarHeight = this.BASE_MOVING_HEIGHT;
+              });
             })
             // 拖动更新：实时计算速度、更新形变、调整偏移量、检测锚点
             .onActionUpdate((event: GestureEvent) => {
@@ -454,7 +444,6 @@ export struct HTabs {
             })
             // 拖动结束：根据拖动距离判断是否切换页签，复位指示器位置
             .onActionEnd(() => {
-              this.isMoving = false;
               const slotWidth = this.getSlotWidth(); // 获取页签插槽宽度
               // 计算拖动的页签数量（四舍五入，超过半格则切换页签）
               const movedSlots = Math.round(this.dragOffsetX / slotWidth);
@@ -479,11 +468,33 @@ export struct HTabs {
                   this.tabsController.changeIndex(newIndex); // 切换tab页
                   this.selectedTabIndex = newIndex;
                   this.activeTabIndex = newIndex;
+                  this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+                    this.animatedBarWidth = 92;
+                    this.animatedBarHeight = 54;
+                    this.velocityDeformationWidth = 0;
+                    this.velocityDeformationHeight = 0;
+                    this.currentVelocity = 0;
+                    this.smoothedVelocity = 0;
+                    this.displayIndex = newIndex;
+                    this.initialDragDirection = 0;
+                    this.lastActiveTimestamp = 0;
+                    this.pauseDetected = false;
+                  });
                 }, 310);
               } else {
                 // 索引未变化，仅复位偏移量，回到当前锚点
+                this.isMoving = false;
                 this.getUIContext().animateTo({ duration: 200, curve: curves.springMotion() }, () => {
+                  this.animatedBarWidth = 92;
+                  this.animatedBarHeight = 54;
+                  this.velocityDeformationWidth = 0;
+                  this.velocityDeformationHeight = 0;
+                  this.currentVelocity = 0;
+                  this.smoothedVelocity = 0;
                   this.dragOffsetX = 0;
+                  this.initialDragDirection = 0;
+                  this.lastActiveTimestamp = 0;
+                  this.pauseDetected = false;
                 });
               }
             })

@@ -10,7 +10,7 @@ import {
   SMOOTHING_FACTOR,
   VELOCITY_NORMALIZE_BASE,
   VELOCITY_THRESHOLD
-} from './HTabsConstants';
+} from '../constant/HTabsConstants';
 
 @ObservedV2
 export class HTabsIndicator {

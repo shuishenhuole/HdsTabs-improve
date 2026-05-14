@@ -22,8 +22,8 @@ import {
   EDGE_DRAG_DAMPING,
   INDICATOR_CONTAINER_WIDTH,
   TAB_BAR_HEIGHT
-} from './HTabsConstants';
-import { calcAnchorPositions, calcSlotWidth } from './HTabsUtils';
+} from '../constant/HTabsConstants';
+import { calcAnchorPositions, calcSlotWidth } from '../utils/HTabsUtils';
 import { HTabsIndicator } from './HTabsIndicator';
 
 @ComponentV2

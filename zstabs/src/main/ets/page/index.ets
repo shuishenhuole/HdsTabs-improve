@@ -1,7 +1,8 @@
 import { ZSTabsOptions } from "../common/TabsOptions"
 import { DTabs } from "../components/DTabs"
-import { HTabs } from "../components/HTabs"
 import deviceInfo from "@ohos.deviceInfo"
+import { HTabs } from "../components/HTabs"
+
 
 @ComponentV2
 export struct ZSTabs {
@@ -28,7 +29,6 @@ export struct ZSTabs {
           },
           tabsOption: this.tabsOption,
         })
-
       }
     }
   }

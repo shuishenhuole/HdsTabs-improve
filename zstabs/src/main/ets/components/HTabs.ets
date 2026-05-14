@@ -8,7 +8,6 @@ import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
 import { ZSTabsConstance } from '../common/constant';
 import { HdsMiniBarButton } from './HdsMiniBarButton';
 import { resourceType } from '../utils/tabtype';
-import { Available } from '@kit.BasicServicesKit';
 
 @ComponentV2
 export struct HTabs {

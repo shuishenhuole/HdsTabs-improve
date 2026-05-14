@@ -12,16 +12,7 @@ export struct ZSTabs {
 
   build() {
     Column() {
-
-      if (deviceInfo.sdkApiVersion >= 23) {
-        HTabs({
-          currentIndex: this.currentIndex,
-          onCurrentIndexChange: (index: number) => {
-            this.$currentIndex(index)
-          },
-          tabsOption: this.tabsOption,
-        })
-      } else {
+      if (deviceInfo.sdkApiVersion < 23) {
         DTabs({
           currentIndex: this.currentIndex,
           onCurrentIndexChange: (index: number) => {
@@ -29,6 +20,15 @@ export struct ZSTabs {
           },
           tabsOption: this.tabsOption,
         })
+      } else {
+        HTabs({
+          currentIndex: this.currentIndex,
+          onCurrentIndexChange: (index: number) => {
+            this.$currentIndex(index)
+          },
+          tabsOption: this.tabsOption,
+        })
+
       }
     }
   }

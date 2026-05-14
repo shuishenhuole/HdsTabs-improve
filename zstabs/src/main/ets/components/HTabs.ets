@@ -7,8 +7,8 @@ import { ZSTabsItem, ZSTabsOptions } from '../common/TabsOptions';
 import { getBaseContainerWidth, getBasePositions } from '../utils/getBaseinfo';
 import { ZSTabsConstance } from '../common/constant';
 import { HdsMiniBarButton } from './HdsMiniBarButton';
-import { showToast } from '../utils/toast';
 import { resourceType } from '../utils/tabtype';
+import { Available } from '@kit.BasicServicesKit';
 
 @ComponentV2
 export struct HTabs {
@@ -357,7 +357,7 @@ export struct HTabs {
               // 指示器内部内容：图标+文本，与当前显示索引同步
               Column({ space: 0 }) {
                 // 页签图标，根据显示索引切换，滑动时（未靠近锚点）添加模糊效果
-                if(this.tabIcons[this.displayIndex].type === resourceType.symbol){
+                if (this.tabIcons[this.displayIndex].type === resourceType.symbol) {
                   SymbolGlyph(this.tabIcons[this.displayIndex])
                     .fontSize(30)
                     .fontColor([this.tabsOption.tabItems[0].selectColor ??
@@ -367,8 +367,7 @@ export struct HTabs {
                     .padding(2)
                     .animation({ duration: 400, curve: Curve.Smooth }) // 图标切换动画
 
-                }
-                else if(this.tabIcons[this.displayIndex].type === resourceType.image){
+                } else if (this.tabIcons[this.displayIndex].type === resourceType.image) {
                   Image(this.tabIcons[this.displayIndex])
                     .width(30)
                     .height(30)

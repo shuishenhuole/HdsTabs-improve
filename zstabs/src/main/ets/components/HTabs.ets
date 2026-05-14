@@ -116,7 +116,7 @@ export struct HTabs {
    * 激活页签变化监听函数
    * 当页签通过点击切换时，同步移动指示器至对应位置，触发液态动效
    */
-  @SyncMonitor("activeTabIndex")
+  @Monitor("activeTabIndex")
   private onActiveTabChange(): void {
     // 若为程序控制移动，直接返回，避免重复处理
     if (this.isProgrammaticChange) {
@@ -146,7 +146,7 @@ export struct HTabs {
    * 移动状态变化监听函数
    * 当isMoving状态改变时，调整指示器的尺寸、形变及模糊效果，实现液态静止/流动切换
    */
-  @SyncMonitor("isMoving")
+  @Monitor("isMoving")
   private onIsMovingChange(): void {
     // 静止状态：重置指示器尺寸、形变和速度，取消模糊效果
     this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {

@@ -78,15 +78,15 @@ struct Index {
               title:"首页",
               color:$r('sys.color.icon'),
               selectColor:$r('sys.color.warning'),
-              icon:$r('sys.media.ohos_ic_public_remove'),
+              icon:$r('sys.symbol.message'),
               builder:wrapBuilder(HomeBuilder),
             },
             {
               title:"第一页",
-              icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(PageOneBuilder),
               color:$r('sys.color.icon'),
               selectColor:$r('sys.color.warning'),
+              icon:$r('sys.media.ohos_ic_public_remove'),
+              builder:wrapBuilder(PageOneBuilder),
             },
             {
               title:"第二页",
@@ -130,13 +130,13 @@ struct Index {
 
 ### ZSTabsItem
 
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| title | string | 是 | - | 页签标题文本 |
-| icon | Resource | 是 | - | 页签图标资源 |
-| color | ResourceColor | 是 | - | 页签未选中时的颜色 |
-| selectColor | ResourceColor | 否 | - | 页签选中时的颜色 |
-| builder | WrappedBuilder<[]> | 是 | - | 页签内容构建器 |
+| 参数          | 类型 | 必填     | 默认值 | 说明 |
+|-------------|------|--------|--------|------|
+| title       | string | 是      | - | 页签标题文本 |
+| icon        | Resource| string | 是 | - | 页签图标资源 支持image和symbol资源 |
+| color       | ResourceColor | 是      | - | 页签未选中时的颜色 |
+| selectColor | ResourceColor | 否      | - | 页签选中时的颜色 |
+| builder     | WrappedBuilder<[]> | 是      | - | 页签内容构建器 |
 
 ### 兼容性
 液态效果仅在api23及以上可用

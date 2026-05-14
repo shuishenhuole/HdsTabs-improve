@@ -1,6 +1,6 @@
 {
   "name": "@shuishenhuole/zstabs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "沉浸式液态指示器TabBar",
   "main": "Index.ets",
   "author": "shuishenhuole",
@@ -9,7 +9,8 @@
     "tabbar",
     "液态指示器"
   ],
-  "homepage": "https://gitcode.com/gcw_RypLVMnR/HdsTabs-improve",
+  "repository": "https://gitcode.com/gcw_RypLVMnR/HdsTabs-improve",
+  "homepage": "https://shuishenhuole.cn/",
   "dependencies": {
     "@shuishenhuole/breakpoint": "^1.2.1"
   },

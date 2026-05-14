@@ -41,15 +41,15 @@ struct Index {
               title:"首页",
               color:$r('sys.color.icon'),
               selectColor:$r('sys.color.warning'),
-              icon:$r('sys.media.ohos_ic_public_remove'),
+              icon:$r('sys.symbol.message'),
               builder:wrapBuilder(HomeBuilder),
             },
             {
               title:"第一页",
-              icon:$r('sys.media.ohos_ic_public_remove'),
-              builder:wrapBuilder(PageOneBuilder),
               color:$r('sys.color.icon'),
               selectColor:$r('sys.color.warning'),
+              icon:$r('sys.media.ohos_ic_public_remove'),
+              builder:wrapBuilder(PageOneBuilder),
             },
             {
               title:"第二页",

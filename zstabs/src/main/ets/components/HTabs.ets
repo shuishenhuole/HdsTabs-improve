@@ -198,13 +198,11 @@ export struct HTabs {
       Column() {
         Row() {
           Stack() {
-            // 液态指示器按钮（HdsMiniBarButton 提供沉浸光感）
+            // 液态指示器按钮（HdsMiniBarButton 提供液态玻璃效果）
             HdsMiniBarButton({
-              maskColor: '#00ffffff',
               barWidth: this.indicator.animatedBarWidth,
               barHeight: this.indicator.animatedBarHeight,
-              materialType: hdsMaterial.MaterialType.IMMERSIVE,
-              materialLevel: hdsMaterial.MaterialLevel.EXQUISITE,
+              maskColor: '#00ffffff',
             }) {
               // 指示器内部内容：图标 + 标题
               Column({ space: 0 }) {
